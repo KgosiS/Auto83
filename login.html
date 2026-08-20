@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto83 | Sign In</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#050505;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left,#2a2a2a 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#141414 0%,transparent 35%);
+    z-index:-2;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+.container{
+    width:100%;
+    max-width:1050px;
+    margin:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:rgba(14,14,14,.88);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:28px;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+    box-shadow:0 30px 60px rgba(0,0,0,.55);
+}
+
+.left{
+    padding:60px;
+    background:linear-gradient(180deg,#101010,#070707);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.logo{
+    font-size:1.6rem;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+.logo span{color:#8b8b8b;}
+
+.badge{
+    display:inline-block;
+    width:max-content;
+    padding:8px 14px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:30px;
+    color:#c3c3c3;
+    font-size:.8rem;
+    margin-bottom:20px;
+}
+
+.left h1{
+    font-size:2.6rem;
+    line-height:1.2;
+    margin-bottom:18px;
+}
+
+.left p{
+    color:#a0a0a0;
+    line-height:1.8;
+    margin-bottom:35px;
+}
+
+.feature{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.circle{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#1c1c1c;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:600;
+}
+
+.feature span{color:#d8d8d8;}
+
+.right{
+    padding:55px 45px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.right h2{
+    font-size:2rem;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#9d9d9d;
+    margin-bottom:30px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#d7d7d7;
+    font-size:.9rem;
+}
+
+input{
+    width:100%;
+    padding:15px 18px;
+    background:#171717;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    color:white;
+    outline:none;
+    transition:.3s;
+}
+
+input:focus{
+    border-color:#666;
+    box-shadow:0 0 0 4px rgba(255,255,255,.05);
+}
+
+.options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:18px 0 28px;
+    font-size:.9rem;
+}
+
+.remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#bdbdbd;
+}
+
+.remember input{
+    width:16px;
+    height:16px;
+}
+
+.options a{
+    color:#dcdcdc;
+    text-decoration:none;
+}
+
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:white;
+    color:black;
+    font-weight:600;
+    font-size:1rem;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(255,255,255,.15);
+}
+
+.signup{
+    text-align:center;
+    margin-top:25px;
+    color:#9d9d9d;
+}
+
+.signup a{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+}
+
+@media(max-width:900px){
+
+    body{
+        align-items:flex-start;
+        padding:20px 0;
+    }
+
+    .container{
+        grid-template-columns:1fr;
+    }
+
+    .left{
+        padding:40px 28px;
+    }
+
+    .right{
+        padding:35px 25px 40px;
+    }
+
+    .left h1{
+        font-size:2rem;
+    }
+
+    .options{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="grid"></div>
+
+<div class="container">
+
+    <div class="left">
+
+        <div class="logo">Auto<span>83</span></div>
+
+        <div class="badge">Secure Applicant Portal</div>
+
+        <h1>Welcome back to Auto83.</h1>
+
+        <p>
+            Sign in to access your saved professional profile, update your qualifications, manage your employment history and generate completed Z83 forms whenever you need them.
+        </p>
+
+        <div class="feature">
+            <div class="circle">01</div>
+            <span>Access your saved profile instantly</span>
+        </div>
+
+        <div class="feature">
+            <div class="circle">02</div>
+            <span>Generate unlimited Z83 forms</span>
+        </div>
+
+        <div class="feature">
+            <div class="circle">03</div>
+            <span>Continue applications from any device</span>
+        </div>
+
+    </div>
+
+    <div class="right">
+
+        <h2>Sign In</h2>
+        <p class="subtitle">Enter your account credentials to continue.</p>
+
+        <form>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="example@email.com">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="Enter your password">
+            </div>
+
+            <div class="options">
+                <label class="remember">
+                    <input type="checkbox">
+                    Remember me
+                </label>
+
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="submit">Sign In</button>
+
+        </form>
+
+        <div class="signup">
+            Don't have an account?
+            <a href="signup.html">Create Account</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
