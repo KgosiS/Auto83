@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Auto83 | Create Account</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#050505;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-x:hidden;
+}
+
+/* Background */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left,#2d2d2d 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#141414 0%,transparent 35%);
+    z-index:-2;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+/* Container */
+
+.container{
+    width:100%;
+    max-width:1150px;
+    margin:30px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:rgba(15,15,15,.85);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,.5);
+}
+
+/* Left */
+
+.left{
+    padding:60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:linear-gradient(180deg,#101010,#080808);
+}
+
+.logo{
+    font-size:1.6rem;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+.logo span{
+    color:#8c8c8c;
+}
+
+.tag{
+    display:inline-block;
+    width:max-content;
+    padding:8px 14px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:30px;
+    color:#bdbdbd;
+    font-size:.8rem;
+    margin-bottom:20px;
+}
+
+.left h1{
+    font-size:2.7rem;
+    line-height:1.2;
+    margin-bottom:18px;
+}
+
+.left p{
+    color:#9d9d9d;
+    line-height:1.8;
+    margin-bottom:35px;
+}
+
+.points{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.point{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#1d1d1d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1.1rem;
+}
+
+.point span{
+    color:#d7d7d7;
+}
+
+/* Right */
+
+.right{
+    padding:55px 45px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.right h2{
+    font-size:2rem;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#9b9b9b;
+    margin-bottom:30px;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#d5d5d5;
+    font-size:.9rem;
+}
+
+input{
+    width:100%;
+    padding:15px 18px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.08);
+    background:#161616;
+    color:white;
+    outline:none;
+    transition:.3s;
+    font-size:.95rem;
+}
+
+input:focus{
+    border-color:#6f6f6f;
+    box-shadow:0 0 0 4px rgba(255,255,255,.05);
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.terms{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin:22px 0;
+}
+
+.terms input{
+    width:18px;
+    height:18px;
+    margin-top:3px;
+}
+
+.terms p{
+    color:#a8a8a8;
+    font-size:.85rem;
+    line-height:1.6;
+}
+
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:white;
+    color:black;
+    font-weight:600;
+    font-size:1rem;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(255,255,255,.15);
+}
+
+.login{
+    text-align:center;
+    margin-top:25px;
+    color:#9c9c9c;
+    font-size:.9rem;
+}
+
+.login a{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* Mobile */
+
+@media(max-width:900px){
+
+    body{
+        align-items:flex-start;
+        padding:20px 0;
+    }
+
+    .container{
+        grid-template-columns:1fr;
+        margin:15px;
+    }
+
+    .left{
+        padding:40px 28px;
+    }
+
+    .right{
+        padding:35px 25px 40px;
+    }
+
+    .left h1{
+        font-size:2rem;
+    }
+
+    .row{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="grid"></div>
+
+<div class="container">
+
+    <div class="left">
+
+        <div class="logo">Auto<span>83</span></div>
+
+        <div class="tag">South African Government Applications</div>
+
+        <h1>Create your professional profile once.</h1>
+
+        <p>
+            Join Auto83 and eliminate repetitive paperwork. Your personal details,
+            qualifications, employment history and references will be securely saved
+            and ready to generate Z83 forms whenever you apply for a vacancy.
+        </p>
+
+        <div class="points">
+
+            <div class="point">
+                <div class="icon">✓</div>
+                <span>Unlimited Z83 generation</span>
+            </div>
+
+            <div class="point">
+                <div class="icon">✓</div>
+                <span>Secure profile storage</span>
+            </div>
+
+            <div class="point">
+                <div class="icon">✓</div>
+                <span>Works on mobile and desktop</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="right">
+
+        <h2>Create Account</h2>
+        <p class="subtitle">Start building your reusable Z83 profile.</p>
+
+        <form>
+
+            <div class="row">
+
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" placeholder="Kgosi">
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Sebako">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="example@email.com">
+            </div>
+
+            <div class="form-group">
+                <label>South African ID Number</label>
+                <input type="text" placeholder="0000000000000">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="Create a secure password">
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" placeholder="Confirm your password">
+            </div>
+
+            <div class="terms">
+                <input type="checkbox">
+                <p>
+                    I agree to the Terms of Service and Privacy Policy and consent
+                    to the secure storage of my application information.
+                </p>
+            </div>
+
+            <button>Create Account</button>
+
+        </form>
+
+        <div class="login">
+            Already have an account?
+            <a href="login.html">Sign In</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
