@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto83 | Autofill Your Z83 Form</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#050505;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* Background */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left,#2d2d2d 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#141414 0%,transparent 30%);
+    opacity:.8;
+    z-index:-2;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+/* Navigation */
+
+nav{
+    width:100%;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    backdrop-filter:blur(15px);
+    background:rgba(5,5,5,.65);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    z-index:1000;
+}
+
+.logo{
+    font-size:1.4rem;
+    font-weight:700;
+}
+
+.logo span{
+    color:#9f9f9f;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+    gap:30px;
+}
+
+nav a{
+    color:#ddd;
+    text-decoration:none;
+    font-size:.95rem;
+}
+
+.btn{
+    background:white;
+    color:black;
+    padding:12px 24px;
+    border-radius:50px;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(255,255,255,.15);
+}
+
+/* Hero */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:120px 8% 60px;
+}
+
+.hero-content{
+    flex:1;
+}
+
+.tag{
+    display:inline-block;
+    padding:8px 16px;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:30px;
+    color:#cfcfcf;
+    margin-bottom:20px;
+    font-size:.85rem;
+}
+
+.hero h1{
+    font-size:4rem;
+    line-height:1.1;
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    color:#7f7f7f;
+}
+
+.hero p{
+    color:#b8b8b8;
+    font-size:1.05rem;
+    max-width:560px;
+    line-height:1.8;
+    margin-bottom:35px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.secondary{
+    background:transparent;
+    border:1px solid rgba(255,255,255,.15);
+    color:white;
+}
+
+.phone{
+    flex:1;
+    display:flex;
+    justify-content:center;
+}
+
+.mockup{
+    width:320px;
+    background:#101010;
+    border-radius:30px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 25px 60px rgba(0,0,0,.6);
+}
+
+.screen{
+    background:#181818;
+    border-radius:20px;
+    padding:20px;
+}
+
+.card{
+    background:#222;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:15px;
+}
+
+.line{
+    height:10px;
+    background:#3a3a3a;
+    border-radius:20px;
+    margin:8px 0;
+}
+
+.small{width:45%;}
+.medium{width:70%;}
+.full{width:100%;}
+
+/* Stats */
+
+.stats{
+    padding:40px 8%;
+}
+
+.stat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.stat{
+    background:#111;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+}
+
+.stat h2{
+    font-size:2rem;
+}
+
+.stat p{
+    color:#9d9d9d;
+    margin-top:8px;
+}
+
+/* Features */
+
+.features{
+    padding:80px 8%;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.title h2{
+    font-size:2.5rem;
+    margin-bottom:10px;
+}
+
+.title p{
+    color:#9d9d9d;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:25px;
+}
+
+.feature{
+    background:#101010;
+    padding:30px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.06);
+    transition:.35s;
+}
+
+.feature:hover{
+    transform:translateY(-8px);
+    border-color:#666;
+}
+
+.icon{
+    width:55px;
+    height:55px;
+    border-radius:15px;
+    background:#1e1e1e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.5rem;
+    margin-bottom:18px;
+}
+
+.feature h3{
+    margin-bottom:12px;
+}
+
+.feature p{
+    color:#aaa;
+    line-height:1.7;
+    font-size:.95rem;
+}
+
+/* CTA */
+
+.cta{
+    margin:80px 8%;
+    background:linear-gradient(135deg,#151515,#0b0b0b);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:30px;
+    padding:60px 35px;
+    text-align:center;
+}
+
+.cta h2{
+    font-size:2.4rem;
+    margin-bottom:15px;
+}
+
+.cta p{
+    color:#aaa;
+    max-width:650px;
+    margin:auto;
+    margin-bottom:30px;
+    line-height:1.8;
+}
+
+/* Footer */
+
+footer{
+    padding:30px;
+    text-align:center;
+    color:#777;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* Mobile */
+
+.menu{
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+
+    .hero{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .hero h1{
+        font-size:2.8rem;
+    }
+
+    .hero p{
+        margin:auto;
+        margin-bottom:30px;
+    }
+
+    .hero-buttons{
+        justify-content:center;
+    }
+
+    .phone{
+        margin-top:50px;
+    }
+
+    .stat-grid{
+        grid-template-columns:1fr;
+    }
+
+    nav ul{
+        position:absolute;
+        top:75px;
+        left:0;
+        width:100%;
+        background:#0d0d0d;
+        flex-direction:column;
+        text-align:center;
+        max-height:0;
+        overflow:hidden;
+        transition:.3s;
+    }
+
+    nav ul.active{
+        max-height:250px;
+        padding:20px 0;
+    }
+
+    .menu{
+        display:block;
+    }
+
+    nav .btn{
+        display:none;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="grid"></div>
+
+<nav>
+    <div class="logo">Auto<span>83</span></div>
+
+    <ul id="navLinks">
+        <li><a href="#">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+
+    <a href="#" class="btn">Get Started</a>
+
+    <div class="menu" onclick="toggleMenu()">☰</div>
+</nav>
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="tag">
+South Africa's Smart Z83 Assistant
+</div>
+
+<h1>
+Autofill Your <span>Z83 Form</span> in Minutes
+</h1>
+
+<p>
+Stop filling the same government job application details over and over again. Auto83 securely stores your profile, qualifications, employment history and references, then instantly generates a complete Z83 form ready for download.
+</p>
+
+<div class="hero-buttons">
+<a href="#" class="btn">Create Profile</a>
+<a href="#features" class="btn secondary">Learn More</a>
+</div>
+
+</div>
+
+<div class="phone">
+
+<div class="mockup">
+
+<div class="screen">
+
+<div class="card">
+<strong>Z83 Profile</strong>
+<div class="line full"></div>
+<div class="line medium"></div>
+<div class="line small"></div>
+</div>
+
+<div class="card">
+<strong>Qualifications</strong>
+<div class="line full"></div>
+<div class="line full"></div>
+</div>
+
+<div class="card">
+<strong>References</strong>
+<div class="line medium"></div>
+<div class="line full"></div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section class="stats">
+<div class="stat-grid">
+
+<div class="stat">
+<h2>1×</h2>
+<p>Create your profile once</p>
+</div>
+
+<div class="stat">
+<h2>60s</h2>
+<p>Generate a completed Z83</p>
+</div>
+
+<div class="stat">
+<h2>100%</h2>
+<p>Mobile responsive experience</p>
+</div>
+
+</div>
+</section>
+
+<section class="features" id="features">
+
+<div class="title">
+<h2>Everything You Need</h2>
+<p>Designed specifically for South African government job applications.</p>
+</div>
+
+<div class="feature-grid">
+
+<div class="feature">
+<div class="icon">📄</div>
+<h3>Automatic Z83 Completion</h3>
+<p>Populate every section of the Z83 form using your saved information without repetitive typing.</p>
+</div>
+
+<div class="feature">
+<div class="icon">👤</div>
+<h3>Save Your Profile</h3>
+<p>Store personal details, qualifications, employment history and references securely for future applications.</p>
+</div>
+
+<div class="feature">
+<div class="icon">📱</div>
+<h3>Works on Any Device</h3>
+<p>Complete applications seamlessly on your phone, tablet or desktop with a fully responsive interface.</p>
+</div>
+
+<div class="feature">
+<div class="icon">⚡</div>
+<h3>Fast PDF Export</h3>
+<p>Generate a professional Z83 document that's ready to print or upload to job portals.</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="cta" id="about">
+
+<h2>One Profile. Unlimited Applications.</h2>
+
+<p>
+Whether you're applying for internships, graduate programmes or permanent government posts, Auto83 removes repetitive paperwork so you can focus on finding your next opportunity.
+</p>
+
+<a href="#" class="btn">Get Started Free</a>
+
+</section>
+
+<footer>
+© 2026 Auto83. Built for South African job seekers.
+</footer>
+
+<script>
+function toggleMenu(){
+    document.getElementById("navLinks").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
