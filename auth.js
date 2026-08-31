@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
   const isFirebaseConfigured = () => {
-    return window.firebase &&
+    return typeof window.firebase !== 'undefined' &&
       window.firebase.apps &&
       window.firebase.apps.length > 0 &&
       typeof window.firebase.auth === 'function';
@@ -18,14 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (!isFirebaseConfigured()) {
-    showMessage('Firebase is not configured yet. Update firebase-config.js with your project values.', 'error');
+    const msgBox = document.getElementById('form-message');
+    if (msgBox) {
+      showMessage('Firebase is not configured yet. Update firebase-config.js with your project values.', 'error');
+    }
     return;
   }
 
   if (['login.html', 'signup.html', 'forgot-password.html'].includes(currentPage)) {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        window.location.href = 'index.html';
+        window.location.replace('dashboard.html');
       }
     });
   }
