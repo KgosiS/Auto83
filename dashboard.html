@@ -192,6 +192,18 @@
       color: var(--muted);
     }
 
+    .tiny-link {
+      margin-top: 12px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      font-weight: 500;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
     .main {
       flex: 1;
       padding: 32px 22px 90px;
@@ -584,12 +596,13 @@
       <div class="sidebar-footer">
         <div class="mini">Signed in as</div>
         <div class="profile-card">
-          <div class="avatar">KS</div>
+          <div id="user-avatar" class="avatar">A</div>
           <div>
-            <strong>Kgosi Sebako</strong>
-            <span>Applicant</span>
+            <strong id="user-name">Loading...</strong>
+            <span id="user-role">Applicant</span>
           </div>
         </div>
+        <button id="sidebar-sign-out" class="tiny-link" type="button">Sign out</button>
       </div>
     </aside>
 
@@ -603,6 +616,7 @@
         <div class="header-actions">
           <button class="ghost-btn" type="button">Export</button>
           <button class="primary-btn" type="button">Generate Z83</button>
+          <button id="sign-out" class="ghost-btn" type="button">Sign out</button>
         </div>
       </div>
 
@@ -752,5 +766,92 @@
       <span>Settings</span>
     </a>
   </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userNameEl = document.getElementById('user-name');
+      const userRoleEl = document.getElementById('user-role');
+      const userAvatarEl = document.getElementById('user-avatar');
+      const signOutButtons = [
+        document.getElementById('sign-out'),
+        document.getElementById('sidebar-sign-out')
+      ].filter(Boolean);
+
+      const isFirebaseConfigured = () => {
+        return typeof window.firebase !== 'undefined' &&
+          window.firebase.apps &&
+          window.firebase.apps.length > 0 &&
+          typeof window.firebase.auth === 'function';
+      };
+
+      if (!isFirebaseConfigured()) {
+        if (userNameEl) userNameEl.textContent = 'Firebase setup needed';
+        if (userRoleEl) userRoleEl.textContent = 'Update config';
+        return;
+      }
+
+      const applyUserProfile = (user) => {
+        const displayName = user.displayName || user.email || 'Applicant';
+        const initials = displayName
+          .split(' ')
+          .map(part => part.charAt(0))
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+
+        if (userNameEl) {
+          const safeName = user.displayName || user.email?.split('@')[0] || 'Applicant';
+          userNameEl.textContent = safeName;
+        }
+
+        if (userRoleEl) {
+          userRoleEl.textContent = 'Applicant';
+        }
+
+        if (userAvatarEl) {
+          userAvatarEl.textContent = initials || 'A';
+        }
+
+        if (user && db && db.collection) {
+          db.collection('users').doc(user.uid).get().then((snapshot) => {
+            if (snapshot.exists && userNameEl) {
+              const data = snapshot.data();
+              const firstName = data.firstName || '';
+              const lastName = data.lastName || '';
+              if (firstName || lastName) {
+                userNameEl.textContent = `${firstName} ${lastName}`.trim();
+              }
+            }
+          }).catch(() => {
+            // Ignore missing profile data and keep the Firebase display name fallback.
+          });
+        }
+      };
+
+      signOutButtons.forEach((button) => {
+        button.addEventListener('click', async () => {
+          try {
+            await auth.signOut();
+            window.location.replace('login.html');
+          } catch (error) {
+            window.location.replace('login.html');
+          }
+        });
+      });
+
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          window.location.replace('login.html');
+          return;
+        }
+
+        applyUserProfile(user);
+      });
+    });
+  </script>
 </body>
 </html>
