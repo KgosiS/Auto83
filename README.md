@@ -4,6 +4,51 @@ Auto83 is a modern web application designed to simplify South African government
 
 The project is built entirely with HTML, CSS, and JavaScript, making it lightweight, responsive, and easy to deploy on any static web hosting platform.
 
+## Firebase + GitHub Pages setup
+
+Because GitHub Pages only supports static hosting, the backend is implemented with Firebase Auth and Firestore on the client side. This means the app does not run a custom Node.js server on GitHub Pages.
+
+### Step 1: Create a Firebase project
+
+1. Go to https://console.firebase.google.com
+2. Create a new project.
+3. Enable Authentication and choose Email/Password sign-in.
+4. Optional: enable Firestore Database.
+
+### Step 2: Add your Firebase config
+
+Open `firebase-config.js` and replace the placeholder values with your real Firebase project configuration.
+
+```js
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+```
+
+### Step 3: Deploy to GitHub Pages
+
+1. Push the project to a GitHub repository.
+2. In GitHub, go to Settings > Pages.
+3. Set the source to the main branch and root folder.
+4. Save.
+5. GitHub Pages will provide a live URL.
+
+### Step 4: Authorization behavior
+
+- Sign up creates a user in Firebase Auth and stores profile information in Firestore.
+- Sign in authenticates with Firebase email/password.
+- Forgot password sends a Firebase reset email.
+- The site works on GitHub Pages because Firebase runs from the browser, not from a server.
+
+### Important note
+
+GitHub Pages does not support server-side secrets. Keep Firebase config public as designed for web apps, and make sure your Firebase project security rules are correct.
+
 ---
 
 # Project Vision
