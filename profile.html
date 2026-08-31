@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto83 | Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #121212;
+      --panel-alt: #171717;
+      --panel-soft: #1d1d1d;
+      --line: rgba(255,255,255,0.08);
+      --text: #f3f3f3;
+      --muted: #9c9c9c;
+      --soft: #d0d0d0;
+      --shadow: rgba(0,0,0,0.38);
+      --accent: #ffffff;
+      --success: #8bd49b;
+      --warning: #f7d88b;
+      --danger: #ff9a9a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.04), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.03), transparent 30%),
+        var(--bg);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 38px 38px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: rgba(12,12,12,0.92);
+      border-right: 1px solid var(--line);
+      padding: 26px 20px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      padding: 8px 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .brand span {
+      color: #9c9c9c;
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .nav-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: var(--soft);
+      background: transparent;
+      transition: 0.2s ease;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.025);
+      border-color: var(--line);
+    }
+
+    .nav-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      border: 1px solid var(--line);
+      background: #1b1b1b;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 14px;
+    }
+
+    .mini {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 4px 0;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a2a2a, #121212);
+      border: 1px solid var(--line);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .profile-card strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .profile-card span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px 22px 90px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px;
+      padding: 8px 4px;
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .page-title p {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .secondary-btn,
+    .tiny-link {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #050505;
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .section-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(18,18,18,0.9);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 18px 38px var(--shadow);
+      padding: 22px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.12rem;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+      font-size: 0.72rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--soft);
+      font-size: 0.82rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 0.94rem;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .entry-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .entry-meta strong {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .entry-meta span {
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 0.72rem;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 20px 16px 94px;
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .entry-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(11,11,11,0.92);
+        backdrop-filter: blur(14px);
+        border-top: 1px solid var(--line);
+        z-index: 50;
+      }
+
+      .bottom-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 10px 8px;
+        border-radius: 12px;
+        color: var(--muted);
+        font-size: 0.68rem;
+        border: 1px solid transparent;
+      }
+
+      .bottom-item.active {
+        color: var(--text);
+        background: rgba(255,255,255,0.04);
+        border-color: var(--line);
+      }
+
+      .bottom-icon {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--line);
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">Auto<span>83</span></div>
+
+      <div class="nav-group">
+        <div class="nav-label">Navigation</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">D</span>
+          Dashboard
+        </a>
+        <a href="profile.html" class="nav-item active">
+          <span class="nav-icon">P</span>
+          Profile
+        </a>
+        <a href="#education" class="nav-item">
+          <span class="nav-icon">Q</span>
+          Qualifications
+        </a>
+        <a href="#employment" class="nav-item">
+          <span class="nav-icon">E</span>
+          Employment
+        </a>
+        <a href="#references" class="nav-item">
+          <span class="nav-icon">R</span>
+          References
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Actions</div>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">Z</span>
+          Generate Z83
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">S</span>
+          Settings
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="mini">Signed in as</div>
+        <div class="profile-card">
+          <div class="avatar">A</div>
+          <div>
+            <strong>Applicant</strong>
+            <span>Profile owner</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="page-title">
+          <h1>Profile</h1>
+          <p>Update your personal details and application history.</p>
+        </div>
+
+        <div class="header-actions">
+          <button id="save-draft" class="ghost-btn" type="button">Save draft</button>
+          <button id="save-profile" class="primary-btn" type="button">Save profile</button>
+        </div>
+      </div>
+
+      <div class="section-stack">
+        <section class="panel" id="personal">
+          <div class="panel-header">
+            <h2>Personal details</h2>
+            <span class="chip">Profile</span>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" type="text" value="Kgosi" />
+            </div>
+
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" type="text" value="Sebako" />
+            </div>
+
+            <div class="field">
+              <label for="idNumber">South African ID number</label>
+              <input id="idNumber" type="text" value="0000000000000" />
+            </div>
+
+            <div class="field">
+              <label for="dob">Date of birth</label>
+              <input id="dob" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="email">Email address</label>
+              <input id="email" type="email" value="example@email.com" />
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone number</label>
+              <input id="phone" type="tel" value="+27 00 000 0000" />
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="address">Residential address</label>
+              <textarea id="address">12 Main Road, Johannesburg, Gauteng</textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="education">
+          <div class="panel-header">
+            <h2>Education and qualifications</h2>
+            <span class="chip">3 entries</span>
+          </div>
+
+          <div class="card-list">
+            <div class="entry-card">
+              <div class="entry-meta">
+                <strong>Bachelor of Commerce</strong>
+                <span>University of Johannesburg • 2021</span>
+              </div>
+              <div class="entry-actions">
+                <button type="button" class="mini-btn">Edit</button>
+                <button type="button" class="mini-btn">Remove</button>
+              </div>
+            </div>
+
+            <div class="entry-card">
+              <div class="entry-meta">
+                <strong>National Senior Certificate</strong>
+                <span>Northview High School • 2016</span>
+              </div>
+              <div class="entry-actions">
+                <button type="button" class="mini-btn">Edit</button>
+                <button type="button" class="mini-btn">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="secondary-btn" type="button">Add qualification</button>
+          </div>
+        </section>
+
+        <section class="panel" id="employment">
+          <div class="panel-header">
+            <h2>Employment history</h2>
+            <span class="chip">2 records</span>
+          </div>
+
+          <div class="card-list">
+            <div class="entry-card">
+              <div class="entry-meta">
+                <strong>Administrative Officer</strong>
+                <span>Department of Public Works • 2022 - Present</span>
+              </div>
+              <div class="entry-actions">
+                <button type="button" class="mini-btn">Edit</button>
+                <button type="button" class="mini-btn">Remove</button>
+              </div>
+            </div>
+
+            <div class="entry-card">
+              <div class="entry-meta">
+                <strong>Customer Service Assistant</strong>
+                <span>City Support Centre • 2019 - 2022</span>
+              </div>
+              <div class="entry-actions">
+                <button type="button" class="mini-btn">Edit</button>
+                <button type="button" class="mini-btn">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="secondary-btn" type="button">Add employment</button>
+          </div>
+        </section>
+
+        <section class="panel" id="references">
+          <div class="panel-header">
+            <h2>Professional references</h2>
+            <span class="chip">2 contacts</span>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="refName1">Reference 1 name</label>
+              <input id="refName1" type="text" value="Mpho Ndlovu" />
+            </div>
+
+            <div class="field">
+              <label for="refRole1">Reference 1 role</label>
+              <input id="refRole1" type="text" value="Team Leader" />
+            </div>
+
+            <div class="field">
+              <label for="refPhone1">Reference 1 phone</label>
+              <input id="refPhone1" type="tel" value="+27 82 555 1122" />
+            </div>
+
+            <div class="field">
+              <label for="refEmail1">Reference 1 email</label>
+              <input id="refEmail1" type="email" value="mpho@company.co.za" />
+            </div>
+
+            <div class="field">
+              <label for="refName2">Reference 2 name</label>
+              <input id="refName2" type="text" value="Lerato Mokoena" />
+            </div>
+
+            <div class="field">
+              <label for="refRole2">Reference 2 role</label>
+              <input id="refRole2" type="text" value="Senior Manager" />
+            </div>
+
+            <div class="field">
+              <label for="refPhone2">Reference 2 phone</label>
+              <input id="refPhone2" type="tel" value="+27 83 444 6677" />
+            </div>
+
+            <div class="field">
+              <label for="refEmail2">Reference 2 email</label>
+              <input id="refEmail2" type="email" value="lerato@org.co.za" />
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-item" href="dashboard.html">
+      <span class="bottom-icon">D</span>
+      <span>Home</span>
+    </a>
+    <a class="bottom-item active" href="profile.html">
+      <span class="bottom-icon">P</span>
+      <span>Profile</span>
+    </a>
+    <a class="bottom-item" href="#education">
+      <span class="bottom-icon">Q</span>
+      <span>Study</span>
+    </a>
+    <a class="bottom-item" href="#references">
+      <span class="bottom-icon">R</span>
+      <span>Refs</span>
+    </a>
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const saveProfileBtn = document.getElementById('save-profile');
+      const saveDraftBtn = document.getElementById('save-draft');
+
+      const getFormData = () => ({
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        idNumber: document.getElementById('idNumber').value.trim(),
+        dob: document.getElementById('dob').value,
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        references: {
+          ref1: {
+            name: document.getElementById('refName1').value.trim(),
+            role: document.getElementById('refRole1').value.trim(),
+            phone: document.getElementById('refPhone1').value.trim(),
+            email: document.getElementById('refEmail1').value.trim()
+          },
+          ref2: {
+            name: document.getElementById('refName2').value.trim(),
+            role: document.getElementById('refRole2').value.trim(),
+            phone: document.getElementById('refPhone2').value.trim(),
+            email: document.getElementById('refEmail2').value.trim()
+          }
+        }
+      });
+
+      const fillFormData = (data) => {
+        const profile = data.profile || {};
+        const personal = profile.personal || {};
+        const references = profile.references || {};
+
+        document.getElementById('firstName').value = data.firstName || personal.firstName || '';
+        document.getElementById('lastName').value = data.lastName || personal.lastName || '';
+        document.getElementById('idNumber').value = data.idNumber || personal.idNumber || '';
+        document.getElementById('dob').value = personal.dob || '';
+        document.getElementById('email').value = data.email || personal.email || '';
+        document.getElementById('phone').value = personal.phone || '';
+        document.getElementById('address').value = personal.address || '';
+
+        const ref1 = references.ref1 || {};
+        const ref2 = references.ref2 || {};
+        document.getElementById('refName1').value = ref1.name || '';
+        document.getElementById('refRole1').value = ref1.role || '';
+        document.getElementById('refPhone1').value = ref1.phone || '';
+        document.getElementById('refEmail1').value = ref1.email || '';
+        document.getElementById('refName2').value = ref2.name || '';
+        document.getElementById('refRole2').value = ref2.role || '';
+        document.getElementById('refPhone2').value = ref2.phone || '';
+        document.getElementById('refEmail2').value = ref2.email || '';
+      };
+
+      const saveProfile = async (isDraft = false) => {
+        if (!auth || !db) {
+          return;
+        }
+
+        const user = auth.currentUser;
+        if (!user) {
+          window.location.replace('login.html');
+          return;
+        }
+
+        const formData = getFormData();
+        const payload = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          idNumber: formData.idNumber,
+          updatedAt: new Date().toISOString(),
+          profile: {
+            personal: {
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              idNumber: formData.idNumber,
+              dob: formData.dob,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address
+            },
+            references: formData.references,
+            education: [],
+            employment: []
+          },
+          draft: !!isDraft
+        };
+
+        await db.collection('users').doc(user.uid).set(payload, { merge: true });
+        const saveButton = isDraft ? saveDraftBtn : saveProfileBtn;
+        if (saveButton) {
+          const originalText = saveButton.textContent;
+          saveButton.textContent = 'Saved';
+          setTimeout(() => {
+            saveButton.textContent = originalText;
+          }, 1200);
+        }
+      };
+
+      if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', () => saveProfile(false));
+      }
+
+      if (saveDraftBtn) {
+        saveDraftBtn.addEventListener('click', () => saveProfile(true));
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.replace('login.html');
+          return;
+        }
+
+        try {
+          const snapshot = await db.collection('users').doc(user.uid).get();
+          if (snapshot.exists) {
+            fillFormData(snapshot.data());
+          }
+        } catch (error) {
+          console.error('Unable to load profile data', error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
