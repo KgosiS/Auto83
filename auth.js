@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         showMessage('Signing you in...', 'success');
         await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
       } catch (error) {
         showMessage(error.message || 'Unable to sign in. Please try again.', 'error');
       }
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
           createdAt: new Date().toISOString()
         }, { merge: true });
 
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
       } catch (error) {
         showMessage(error.message || 'Unable to create your account right now.', 'error');
       }
