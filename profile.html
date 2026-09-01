@@ -711,14 +711,105 @@
     </a>
   </nav>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const saveProfileBtn = document.getElementById('save-profile');
       const saveDraftBtn = document.getElementById('save-draft');
+      const STORAGE_KEY = 'auto83-demo-profile';
+      const profileNameEl = document.querySelector('.profile-card strong');
+      const profileAvatarEl = document.querySelector('.avatar');
+
+      const defaultProfile = {
+        firstName: 'Kgosi',
+        lastName: 'Sebako',
+        idNumber: '0000000000000',
+        email: 'example@email.com',
+        draft: false,
+        updatedAt: new Date().toISOString(),
+        profile: {
+          personal: {
+            firstName: 'Kgosi',
+            lastName: 'Sebako',
+            idNumber: '0000000000000',
+            dob: '',
+            email: 'example@email.com',
+            phone: '+27 00 000 0000',
+            address: '12 Main Road, Johannesburg, Gauteng'
+          },
+          references: {
+            ref1: {
+              name: 'Mpho Ndlovu',
+              role: 'Team Leader',
+              phone: '+27 82 555 1122',
+              email: 'mpho@company.co.za'
+            },
+            ref2: {
+              name: 'Lerato Mokoena',
+              role: 'Senior Manager',
+              phone: '+27 83 444 6677',
+              email: 'lerato@org.co.za'
+            }
+          },
+          education: [],
+          employment: []
+        }
+      };
+
+      const getStoredProfile = () => {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (!stored) return JSON.parse(JSON.stringify(defaultProfile));
+          const parsed = JSON.parse(stored);
+          return {
+            ...JSON.parse(JSON.stringify(defaultProfile)),
+            ...parsed,
+            profile: {
+              ...JSON.parse(JSON.stringify(defaultProfile.profile)),
+              ...(parsed.profile || {}),
+              personal: {
+                ...JSON.parse(JSON.stringify(defaultProfile.profile.personal)),
+                ...((parsed.profile && parsed.profile.personal) || {})
+              },
+              references: {
+                ...JSON.parse(JSON.stringify(defaultProfile.profile.references)),
+                ...((parsed.profile && parsed.profile.references) || {})
+              }
+            }
+          };
+        } catch (error) {
+          return JSON.parse(JSON.stringify(defaultProfile));
+        }
+      };
+
+      const setStatusText = (text) => {
+        if (!saveProfileBtn) return;
+        const originalText = saveProfileBtn.dataset.originalText || 'Save profile';
+        saveProfileBtn.dataset.originalText = originalText;
+        saveProfileBtn.textContent = text;
+        setTimeout(() => {
+          saveProfileBtn.textContent = originalText;
+        }, 1200);
+      };
+
+      const updateIdentity = (profile) => {
+        const firstName = profile.firstName || profile.profile?.personal?.firstName || 'Applicant';
+        const lastName = profile.lastName || profile.profile?.personal?.lastName || '';
+        const displayName = `${firstName} ${lastName}`.trim() || 'Applicant';
+        const initials = displayName
+          .split(' ')
+          .map((part) => part.charAt(0))
+          .join('')
+          .slice(0, 2)
+          .toUpperCase() || 'A';
+
+        if (profileNameEl) {
+          profileNameEl.textContent = displayName;
+        }
+
+        if (profileAvatarEl) {
+          profileAvatarEl.textContent = initials;
+        }
+      };
 
       const getFormData = () => ({
         firstName: document.getElementById('firstName').value.trim(),
@@ -767,19 +858,15 @@
         document.getElementById('refRole2').value = ref2.role || '';
         document.getElementById('refPhone2').value = ref2.phone || '';
         document.getElementById('refEmail2').value = ref2.email || '';
+
+        updateIdentity({
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          profile: { personal }
+        });
       };
 
-      const saveProfile = async (isDraft = false) => {
-        if (!auth || !db) {
-          return;
-        }
-
-        const user = auth.currentUser;
-        if (!user) {
-          window.location.replace('login.html');
-          return;
-        }
-
+      const persistProfile = (isDraft = false) => {
         const formData = getFormData();
         const payload = {
           firstName: formData.firstName,
@@ -787,6 +874,7 @@
           email: formData.email,
           idNumber: formData.idNumber,
           updatedAt: new Date().toISOString(),
+          draft: !!isDraft,
           profile: {
             personal: {
               firstName: formData.firstName,
@@ -800,44 +888,60 @@
             references: formData.references,
             education: [],
             employment: []
-          },
-          draft: !!isDraft
+          }
         };
 
-        await db.collection('users').doc(user.uid).set(payload, { merge: true });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        updateIdentity(payload);
+
         const saveButton = isDraft ? saveDraftBtn : saveProfileBtn;
         if (saveButton) {
           const originalText = saveButton.textContent;
           saveButton.textContent = 'Saved';
           setTimeout(() => {
             saveButton.textContent = originalText;
-          }, 1200);
+          }, 700);
         }
       };
 
+      const initialiseProfile = () => {
+        const userProfile = getStoredProfile();
+        fillFormData(userProfile);
+        updateIdentity(userProfile);
+      };
+
       if (saveProfileBtn) {
-        saveProfileBtn.addEventListener('click', () => saveProfile(false));
+        saveProfileBtn.dataset.originalText = saveProfileBtn.textContent;
+        saveProfileBtn.addEventListener('click', () => {
+          persistProfile(false);
+          setStatusText('Saved');
+        });
       }
 
       if (saveDraftBtn) {
-        saveDraftBtn.addEventListener('click', () => saveProfile(true));
+        saveDraftBtn.dataset.originalText = saveDraftBtn.textContent;
+        saveDraftBtn.addEventListener('click', () => {
+          persistProfile(true);
+          setStatusText('Draft saved');
+        });
       }
 
-      auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-          window.location.replace('login.html');
-          return;
-        }
+      const liveInputs = [
+        'firstName', 'lastName', 'idNumber', 'dob', 'email', 'phone', 'address',
+        'refName1', 'refRole1', 'refPhone1', 'refEmail1',
+        'refName2', 'refRole2', 'refPhone2', 'refEmail2'
+      ];
 
-        try {
-          const snapshot = await db.collection('users').doc(user.uid).get();
-          if (snapshot.exists) {
-            fillFormData(snapshot.data());
-          }
-        } catch (error) {
-          console.error('Unable to load profile data', error);
-        }
+      liveInputs.forEach((id) => {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        field.addEventListener('input', () => {
+          persistProfile(false);
+        });
       });
+
+      initialiseProfile();
     });
   </script>
 </body>
