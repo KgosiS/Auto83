@@ -535,17 +535,17 @@
           <div class="grid-2">
             <div class="field">
               <label for="firstName">First name</label>
-              <input id="firstName" type="text" value="Kgosi" />
+              <input id="firstName" type="text" placeholder="Enter your first name" />
             </div>
 
             <div class="field">
               <label for="lastName">Last name</label>
-              <input id="lastName" type="text" value="Sebako" />
+              <input id="lastName" type="text" placeholder="Enter your last name" />
             </div>
 
             <div class="field">
               <label for="idNumber">South African ID number</label>
-              <input id="idNumber" type="text" value="0000000000000" />
+              <input id="idNumber" type="text" placeholder="Enter your ID number" />
             </div>
 
             <div class="field">
@@ -555,17 +555,17 @@
 
             <div class="field">
               <label for="email">Email address</label>
-              <input id="email" type="email" value="example@email.com" />
+              <input id="email" type="email" placeholder="Enter your email address" />
             </div>
 
             <div class="field">
               <label for="phone">Phone number</label>
-              <input id="phone" type="tel" value="+27 00 000 0000" />
+              <input id="phone" type="tel" placeholder="Enter your phone number" />
             </div>
 
             <div class="field" style="grid-column: 1 / -1;">
               <label for="address">Residential address</label>
-              <textarea id="address">12 Main Road, Johannesburg, Gauteng</textarea>
+              <textarea id="address" placeholder="Enter your residential address"></textarea>
             </div>
           </div>
         </section>
@@ -605,42 +605,42 @@
           <div class="grid-2">
             <div class="field">
               <label for="refName1">Reference 1 name</label>
-              <input id="refName1" type="text" value="Mpho Ndlovu" />
+              <input id="refName1" type="text" placeholder="Enter reference name" />
             </div>
 
             <div class="field">
               <label for="refRole1">Reference 1 role</label>
-              <input id="refRole1" type="text" value="Team Leader" />
+              <input id="refRole1" type="text" placeholder="Enter reference role" />
             </div>
 
             <div class="field">
               <label for="refPhone1">Reference 1 phone</label>
-              <input id="refPhone1" type="tel" value="+27 82 555 1122" />
+              <input id="refPhone1" type="tel" placeholder="Enter phone number" />
             </div>
 
             <div class="field">
               <label for="refEmail1">Reference 1 email</label>
-              <input id="refEmail1" type="email" value="mpho@company.co.za" />
+              <input id="refEmail1" type="email" placeholder="Enter email address" />
             </div>
 
             <div class="field">
               <label for="refName2">Reference 2 name</label>
-              <input id="refName2" type="text" value="Lerato Mokoena" />
+              <input id="refName2" type="text" placeholder="Enter reference name" />
             </div>
 
             <div class="field">
               <label for="refRole2">Reference 2 role</label>
-              <input id="refRole2" type="text" value="Senior Manager" />
+              <input id="refRole2" type="text" placeholder="Enter reference role" />
             </div>
 
             <div class="field">
               <label for="refPhone2">Reference 2 phone</label>
-              <input id="refPhone2" type="tel" value="+27 83 444 6677" />
+              <input id="refPhone2" type="tel" placeholder="Enter phone number" />
             </div>
 
             <div class="field">
               <label for="refEmail2">Reference 2 email</label>
-              <input id="refEmail2" type="email" value="lerato@org.co.za" />
+              <input id="refEmail2" type="email" placeholder="Enter email address" />
             </div>
           </div>
         </section>
@@ -680,44 +680,38 @@
       const employmentCountEl = document.getElementById('employment-count');
 
       const defaultProfile = {
-        firstName: 'Kgosi',
-        lastName: 'Sebako',
-        idNumber: '0000000000000',
-        email: 'example@email.com',
+        firstName: '',
+        lastName: '',
+        idNumber: '',
+        email: '',
         draft: false,
         updatedAt: new Date().toISOString(),
         profile: {
           personal: {
-            firstName: 'Kgosi',
-            lastName: 'Sebako',
-            idNumber: '0000000000000',
+            firstName: '',
+            lastName: '',
+            idNumber: '',
             dob: '',
-            email: 'example@email.com',
-            phone: '+27 00 000 0000',
-            address: '12 Main Road, Johannesburg, Gauteng'
+            email: '',
+            phone: '',
+            address: ''
           },
           references: {
             ref1: {
-              name: 'Mpho Ndlovu',
-              role: 'Team Leader',
-              phone: '+27 82 555 1122',
-              email: 'mpho@company.co.za'
+              name: '',
+              role: '',
+              phone: '',
+              email: ''
             },
             ref2: {
-              name: 'Lerato Mokoena',
-              role: 'Senior Manager',
-              phone: '+27 83 444 6677',
-              email: 'lerato@org.co.za'
+              name: '',
+              role: '',
+              phone: '',
+              email: ''
             }
           },
-          education: [
-            { title: 'Bachelor of Commerce', institution: 'University of Johannesburg', year: '2021' },
-            { title: 'National Senior Certificate', institution: 'Northview High School', year: '2016' }
-          ],
-          employment: [
-            { title: 'Administrative Officer', employer: 'Department of Public Works', period: '2022 - Present' },
-            { title: 'Customer Service Assistant', employer: 'City Support Centre', period: '2019 - 2022' }
-          ]
+          education: [],
+          employment: []
         }
       };
 
