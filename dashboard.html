@@ -767,12 +767,9 @@
     </a>
   </nav>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const STORAGE_KEY = 'auto83-demo-profile';
       const userNameEl = document.getElementById('user-name');
       const userRoleEl = document.getElementById('user-role');
       const userAvatarEl = document.getElementById('user-avatar');
@@ -781,76 +778,103 @@
         document.getElementById('sidebar-sign-out')
       ].filter(Boolean);
 
-      const isFirebaseConfigured = () => {
-        return typeof window.firebase !== 'undefined' &&
-          window.firebase.apps &&
-          window.firebase.apps.length > 0 &&
-          typeof window.firebase.auth === 'function';
+      const getStoredProfile = () => {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (!stored) return null;
+          return JSON.parse(stored);
+        } catch (error) {
+          return null;
+        }
       };
 
-      if (!isFirebaseConfigured()) {
-        if (userNameEl) userNameEl.textContent = 'Firebase setup needed';
-        if (userRoleEl) userRoleEl.textContent = 'Update config';
-        return;
-      }
-
-      const applyUserProfile = (user) => {
-        const displayName = user.displayName || user.email || 'Applicant';
+      const updateDashboard = () => {
+        const profile = getStoredProfile();
+        const firstName = profile?.firstName || '';
+        const lastName = profile?.lastName || '';
+        const displayName = `${firstName} ${lastName}`.trim() || 'Applicant';
         const initials = displayName
           .split(' ')
-          .map(part => part.charAt(0))
+          .map((part) => part.charAt(0))
           .join('')
           .slice(0, 2)
-          .toUpperCase();
+          .toUpperCase() || 'A';
 
-        if (userNameEl) {
-          const safeName = user.displayName || user.email?.split('@')[0] || 'Applicant';
-          userNameEl.textContent = safeName;
+        if (userNameEl) userNameEl.textContent = displayName;
+        if (userRoleEl) userRoleEl.textContent = 'Applicant';
+        if (userAvatarEl) userAvatarEl.textContent = initials;
+
+        const personal = profile?.profile?.personal || {};
+        const education = Array.isArray(profile?.profile?.education) ? profile.profile.education : [];
+        const employment = Array.isArray(profile?.profile?.employment) ? profile.profile.employment : [];
+
+        const calcProgress = () => {
+          const fields = [
+            !!(personal.firstName || firstName),
+            !!(personal.lastName || lastName),
+            !!(personal.email || profile?.email),
+            !!(personal.phone),
+            !!(personal.address),
+            !!(personal.idNumber || profile?.idNumber),
+            education.length > 0,
+            employment.length > 0,
+            !!(profile?.profile?.references?.ref1?.name || profile?.profile?.references?.ref2?.name)
+          ];
+
+          const completed = fields.filter(Boolean).length;
+          return Math.round((completed / fields.length) * 100);
+        };
+
+        const progressValue = calcProgress();
+        const statCard = document.querySelector('.stat-card .stat-value');
+        if (statCard) {
+          statCard.textContent = `${progressValue}%`;
         }
 
-        if (userRoleEl) {
-          userRoleEl.textContent = 'Applicant';
+        const statMeta = document.querySelectorAll('.stat-card .stat-meta');
+        if (statMeta[0]) {
+          statMeta[0].textContent = progressValue >= 100 ? 'Profile complete' : 'Profile completeness';
         }
 
-        if (userAvatarEl) {
-          userAvatarEl.textContent = initials || 'A';
-        }
+        const progressBars = document.querySelectorAll('.fill');
+        const progressLabels = document.querySelectorAll('.progress-row strong');
+        const values = [
+          Math.min(94, Math.max(22, progressValue)),
+          education.length ? 80 : 20,
+          employment.length ? 82 : 24,
+          (profile?.profile?.references?.ref1?.name || profile?.profile?.references?.ref2?.name) ? 72 : 18
+        ];
 
-        if (user && db && db.collection) {
-          db.collection('users').doc(user.uid).get().then((snapshot) => {
-            if (snapshot.exists && userNameEl) {
-              const data = snapshot.data();
-              const firstName = data.firstName || '';
-              const lastName = data.lastName || '';
-              if (firstName || lastName) {
-                userNameEl.textContent = `${firstName} ${lastName}`.trim();
-              }
-            }
-          }).catch(() => {
-            // Ignore missing profile data and keep the Firebase display name fallback.
-          });
+        progressBars.forEach((bar, index) => {
+          bar.style.width = `${values[index]}%`;
+        });
+
+        progressLabels.forEach((label, index) => {
+          label.textContent = `${values[index]}%`;
+        });
+
+        const quickSummary = document.querySelectorAll('.summary-item strong');
+        if (quickSummary[0]) {
+          quickSummary[0].textContent = profile?.updatedAt ? new Date(profile.updatedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Not saved yet';
+        }
+        if (quickSummary[1]) {
+          quickSummary[1].textContent = employment.length ? 'Ready to apply' : 'Update profile';
+        }
+        if (quickSummary[2]) {
+          quickSummary[2].textContent = `${education.length + employment.length} items`;
         }
       };
 
       signOutButtons.forEach((button) => {
-        button.addEventListener('click', async () => {
-          try {
-            await auth.signOut();
-            window.location.replace('login.html');
-          } catch (error) {
-            window.location.replace('login.html');
-          }
+        button.addEventListener('click', () => {
+          localStorage.removeItem(STORAGE_KEY);
+          window.location.replace('profile.html');
         });
       });
 
-      auth.onAuthStateChanged((user) => {
-        if (!user) {
-          window.location.replace('login.html');
-          return;
-        }
-
-        applyUserProfile(user);
-      });
+      updateDashboard();
+      window.addEventListener('storage', updateDashboard);
+      window.addEventListener('focus', updateDashboard);
     });
   </script>
 </body>
