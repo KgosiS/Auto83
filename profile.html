@@ -573,70 +573,26 @@
         <section class="panel" id="education">
           <div class="panel-header">
             <h2>Education and qualifications</h2>
-            <span class="chip">3 entries</span>
+            <span id="education-count" class="chip">0 entries</span>
           </div>
 
-          <div class="card-list">
-            <div class="entry-card">
-              <div class="entry-meta">
-                <strong>Bachelor of Commerce</strong>
-                <span>University of Johannesburg • 2021</span>
-              </div>
-              <div class="entry-actions">
-                <button type="button" class="mini-btn">Edit</button>
-                <button type="button" class="mini-btn">Remove</button>
-              </div>
-            </div>
-
-            <div class="entry-card">
-              <div class="entry-meta">
-                <strong>National Senior Certificate</strong>
-                <span>Northview High School • 2016</span>
-              </div>
-              <div class="entry-actions">
-                <button type="button" class="mini-btn">Edit</button>
-                <button type="button" class="mini-btn">Remove</button>
-              </div>
-            </div>
-          </div>
+          <div id="education-list" class="card-list"></div>
 
           <div class="toolbar">
-            <button class="secondary-btn" type="button">Add qualification</button>
+            <button id="add-qualification" class="secondary-btn" type="button">Add qualification</button>
           </div>
         </section>
 
         <section class="panel" id="employment">
           <div class="panel-header">
             <h2>Employment history</h2>
-            <span class="chip">2 records</span>
+            <span id="employment-count" class="chip">0 records</span>
           </div>
 
-          <div class="card-list">
-            <div class="entry-card">
-              <div class="entry-meta">
-                <strong>Administrative Officer</strong>
-                <span>Department of Public Works • 2022 - Present</span>
-              </div>
-              <div class="entry-actions">
-                <button type="button" class="mini-btn">Edit</button>
-                <button type="button" class="mini-btn">Remove</button>
-              </div>
-            </div>
-
-            <div class="entry-card">
-              <div class="entry-meta">
-                <strong>Customer Service Assistant</strong>
-                <span>City Support Centre • 2019 - 2022</span>
-              </div>
-              <div class="entry-actions">
-                <button type="button" class="mini-btn">Edit</button>
-                <button type="button" class="mini-btn">Remove</button>
-              </div>
-            </div>
-          </div>
+          <div id="employment-list" class="card-list"></div>
 
           <div class="toolbar">
-            <button class="secondary-btn" type="button">Add employment</button>
+            <button id="add-employment" class="secondary-btn" type="button">Add employment</button>
           </div>
         </section>
 
@@ -718,6 +674,10 @@
       const STORAGE_KEY = 'auto83-demo-profile';
       const profileNameEl = document.querySelector('.profile-card strong');
       const profileAvatarEl = document.querySelector('.avatar');
+      const educationListEl = document.getElementById('education-list');
+      const employmentListEl = document.getElementById('employment-list');
+      const educationCountEl = document.getElementById('education-count');
+      const employmentCountEl = document.getElementById('employment-count');
 
       const defaultProfile = {
         firstName: 'Kgosi',
@@ -750,32 +710,47 @@
               email: 'lerato@org.co.za'
             }
           },
-          education: [],
-          employment: []
+          education: [
+            { title: 'Bachelor of Commerce', institution: 'University of Johannesburg', year: '2021' },
+            { title: 'National Senior Certificate', institution: 'Northview High School', year: '2016' }
+          ],
+          employment: [
+            { title: 'Administrative Officer', employer: 'Department of Public Works', period: '2022 - Present' },
+            { title: 'Customer Service Assistant', employer: 'City Support Centre', period: '2019 - 2022' }
+          ]
         }
+      };
+
+      const normalizeProfile = (parsed) => {
+        const base = JSON.parse(JSON.stringify(defaultProfile));
+        if (!parsed) return base;
+
+        const profile = parsed.profile || {};
+        return {
+          ...base,
+          ...parsed,
+          profile: {
+            ...base.profile,
+            ...profile,
+            personal: {
+              ...base.profile.personal,
+              ...(profile.personal || {})
+            },
+            references: {
+              ...base.profile.references,
+              ...(profile.references || {})
+            },
+            education: Array.isArray(profile.education) && profile.education.length ? profile.education : base.profile.education,
+            employment: Array.isArray(profile.employment) && profile.employment.length ? profile.employment : base.profile.employment
+          }
+        };
       };
 
       const getStoredProfile = () => {
         try {
           const stored = localStorage.getItem(STORAGE_KEY);
           if (!stored) return JSON.parse(JSON.stringify(defaultProfile));
-          const parsed = JSON.parse(stored);
-          return {
-            ...JSON.parse(JSON.stringify(defaultProfile)),
-            ...parsed,
-            profile: {
-              ...JSON.parse(JSON.stringify(defaultProfile.profile)),
-              ...(parsed.profile || {}),
-              personal: {
-                ...JSON.parse(JSON.stringify(defaultProfile.profile.personal)),
-                ...((parsed.profile && parsed.profile.personal) || {})
-              },
-              references: {
-                ...JSON.parse(JSON.stringify(defaultProfile.profile.references)),
-                ...((parsed.profile && parsed.profile.references) || {})
-              }
-            }
-          };
+          return normalizeProfile(JSON.parse(stored));
         } catch (error) {
           return JSON.parse(JSON.stringify(defaultProfile));
         }
@@ -811,6 +786,19 @@
         }
       };
 
+      const updateCounts = (profile) => {
+        const educationCount = Array.isArray(profile.profile?.education) ? profile.profile.education.length : 0;
+        const employmentCount = Array.isArray(profile.profile?.employment) ? profile.profile.employment.length : 0;
+
+        if (educationCountEl) {
+          educationCountEl.textContent = educationCount === 1 ? '1 entry' : `${educationCount} entries`;
+        }
+
+        if (employmentCountEl) {
+          employmentCountEl.textContent = employmentCount === 1 ? '1 record' : `${employmentCount} records`;
+        }
+      };
+
       const getFormData = () => ({
         firstName: document.getElementById('firstName').value.trim(),
         lastName: document.getElementById('lastName').value.trim(),
@@ -834,6 +822,62 @@
           }
         }
       });
+
+      const renderEducationList = () => {
+        const profile = getStoredProfile();
+        const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
+
+        if (!educationListEl) return;
+
+        if (!education.length) {
+          educationListEl.innerHTML = '<div class="entry-card"><div class="entry-meta"><strong>No qualifications yet</strong><span>Add your first qualification to get started.</span></div></div>';
+          updateCounts(profile);
+          return;
+        }
+
+        educationListEl.innerHTML = education.map((item, index) => `
+          <div class="entry-card">
+            <div class="entry-meta">
+              <strong>${item.title || 'Qualification'}</strong>
+              <span>${item.institution || item.school || 'Institution'}${item.year ? ' • ' + item.year : ''}</span>
+            </div>
+            <div class="entry-actions">
+              <button type="button" class="mini-btn" data-action="edit-qualification" data-index="${index}">Edit</button>
+              <button type="button" class="mini-btn" data-action="remove-qualification" data-index="${index}">Remove</button>
+            </div>
+          </div>
+        `).join('');
+
+        updateCounts(profile);
+      };
+
+      const renderEmploymentList = () => {
+        const profile = getStoredProfile();
+        const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
+
+        if (!employmentListEl) return;
+
+        if (!employment.length) {
+          employmentListEl.innerHTML = '<div class="entry-card"><div class="entry-meta"><strong>No work experience yet</strong><span>Add your first role to highlight your background.</span></div></div>';
+          updateCounts(profile);
+          return;
+        }
+
+        employmentListEl.innerHTML = employment.map((item, index) => `
+          <div class="entry-card">
+            <div class="entry-meta">
+              <strong>${item.title || 'Role Title'}</strong>
+              <span>${item.employer || item.company || 'Employer'}${item.period ? ' • ' + item.period : ''}</span>
+            </div>
+            <div class="entry-actions">
+              <button type="button" class="mini-btn" data-action="edit-employment" data-index="${index}">Edit</button>
+              <button type="button" class="mini-btn" data-action="remove-employment" data-index="${index}">Remove</button>
+            </div>
+          </div>
+        `).join('');
+
+        updateCounts(profile);
+      };
 
       const fillFormData = (data) => {
         const profile = data.profile || {};
@@ -868,6 +912,7 @@
 
       const persistProfile = (isDraft = false) => {
         const formData = getFormData();
+        const currentProfile = getStoredProfile();
         const payload = {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -886,13 +931,16 @@
               address: formData.address
             },
             references: formData.references,
-            education: [],
-            employment: []
+            education: Array.isArray(currentProfile.profile?.education) ? currentProfile.profile.education : defaultProfile.profile.education,
+            employment: Array.isArray(currentProfile.profile?.employment) ? currentProfile.profile.employment : defaultProfile.profile.employment
           }
         };
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         updateIdentity(payload);
+        updateCounts(payload);
+        renderEducationList();
+        renderEmploymentList();
 
         const saveButton = isDraft ? saveDraftBtn : saveProfileBtn;
         if (saveButton) {
@@ -904,10 +952,108 @@
         }
       };
 
+      const editEducationItem = (index) => {
+        const profile = getStoredProfile();
+        const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
+        const entry = education[index];
+        if (!entry) return;
+
+        const title = prompt('Qualification title', entry.title || '');
+        if (title === null) return;
+        const institution = prompt('Institution / school', entry.institution || '');
+        if (institution === null) return;
+        const year = prompt('Completion year', entry.year || '');
+        if (year === null) return;
+
+        education[index] = {
+          title: title.trim() || entry.title || 'Qualification',
+          institution: institution.trim() || entry.institution || 'Institution',
+          year: year.trim() || entry.year || 'N/A'
+        };
+
+        const updatedProfile = getStoredProfile();
+        updatedProfile.profile.education = education;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+        renderEducationList();
+      };
+
+      const editEmploymentItem = (index) => {
+        const profile = getStoredProfile();
+        const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
+        const entry = employment[index];
+        if (!entry) return;
+
+        const title = prompt('Job title', entry.title || '');
+        if (title === null) return;
+        const employer = prompt('Employer / company', entry.employer || '');
+        if (employer === null) return;
+        const period = prompt('Employment period', entry.period || '');
+        if (period === null) return;
+
+        employment[index] = {
+          title: title.trim() || entry.title || 'Role',
+          employer: employer.trim() || entry.employer || 'Employer',
+          period: period.trim() || entry.period || 'N/A'
+        };
+
+        const updatedProfile = getStoredProfile();
+        updatedProfile.profile.employment = employment;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+        renderEmploymentList();
+      };
+
+      const addQualification = () => {
+        const profile = getStoredProfile();
+        const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
+        const title = prompt('Qualification title', 'New Qualification');
+        if (title === null) return;
+
+        const institution = prompt('Institution / school', 'Institution name');
+        if (institution === null) return;
+
+        const year = prompt('Completion year', '2026');
+        if (year === null) return;
+
+        education.push({
+          title: title.trim() || 'New Qualification',
+          institution: institution.trim() || 'Institution name',
+          year: year.trim() || '2026'
+        });
+
+        profile.profile.education = education;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        renderEducationList();
+      };
+
+      const addEmployment = () => {
+        const profile = getStoredProfile();
+        const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
+        const title = prompt('Job title', 'New Role');
+        if (title === null) return;
+
+        const employer = prompt('Employer / organisation', 'Company Name');
+        if (employer === null) return;
+
+        const period = prompt('Employment period', '2024 - Present');
+        if (period === null) return;
+
+        employment.push({
+          title: title.trim() || 'New Role',
+          employer: employer.trim() || 'Company Name',
+          period: period.trim() || '2024 - Present'
+        });
+
+        profile.profile.employment = employment;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        renderEmploymentList();
+      };
+
       const initialiseProfile = () => {
         const userProfile = getStoredProfile();
         fillFormData(userProfile);
         updateIdentity(userProfile);
+        renderEducationList();
+        renderEmploymentList();
       };
 
       if (saveProfileBtn) {
@@ -939,6 +1085,44 @@
         field.addEventListener('input', () => {
           persistProfile(false);
         });
+      });
+
+      document.getElementById('add-qualification')?.addEventListener('click', addQualification);
+      document.getElementById('add-employment')?.addEventListener('click', addEmployment);
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+
+        const { action, index } = target.dataset;
+        if (action === 'remove-qualification') {
+          const profile = getStoredProfile();
+          const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
+          education.splice(Number(index), 1);
+          profile.profile.education = education;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+          renderEducationList();
+          return;
+        }
+
+        if (action === 'remove-employment') {
+          const profile = getStoredProfile();
+          const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
+          employment.splice(Number(index), 1);
+          profile.profile.employment = employment;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+          renderEmploymentList();
+          return;
+        }
+
+        if (action === 'edit-qualification') {
+          editEducationItem(Number(index));
+          return;
+        }
+
+        if (action === 'edit-employment') {
+          editEmploymentItem(Number(index));
+        }
       });
 
       initialiseProfile();
