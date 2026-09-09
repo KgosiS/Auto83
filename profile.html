@@ -775,6 +775,7 @@
     </a>
   </nav>
 
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="z83-template.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -1026,9 +1027,8 @@
           </html>`;
       };
 
-      const generateZ83 = () => {
+      const generateZ83 = async () => {
         const profile = getStoredProfile();
-        const formMarkup = window.createOfficialZ83Document(profile || {});
         const z83Window = window.open('', '_blank', 'width=1200,height=900');
 
         if (!z83Window) {
@@ -1036,18 +1036,15 @@
           return;
         }
 
-        z83Window.document.open();
-        z83Window.document.write(formMarkup);
-        z83Window.document.close();
-
-        setTimeout(() => {
-          try {
-            z83Window.focus();
-            z83Window.print();
-          } catch (error) {
-            console.error('Unable to print Z83 preview:', error);
-          }
-        }, 300);
+        try {
+          const pdfBytes = await window.createOfficialZ83Document(profile || {});
+          const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+          z83Window.location.href = pdfUrl;
+        } catch (error) {
+          z83Window.close();
+          alert('Unable to generate the Z83 form. Please try again.');
+          console.error('Unable to generate Z83 form:', error);
+        }
       };
 
       const updateIdentity = (profile) => {
