@@ -743,6 +743,7 @@
     </a>
   </nav>
 
+  <script src="z83-template.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const STORAGE_KEY = 'auto83-demo-profile';
@@ -893,7 +894,7 @@
 
       const generateZ83 = () => {
         const profile = getStoredProfile();
-        const formMarkup = createZ83Document(profile || {});
+        const formMarkup = window.createOfficialZ83Document(profile || {});
         const z83Window = window.open('', '_blank', 'width=1200,height=900');
 
         if (!z83Window) {
