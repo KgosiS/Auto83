@@ -521,6 +521,7 @@
 
         <div class="header-actions">
           <button id="save-draft" class="ghost-btn" type="button">Save draft</button>
+          <button id="generate-z83-profile" class="ghost-btn" type="button">Generate Z83</button>
           <button id="save-profile" class="primary-btn" type="button">Save profile</button>
         </div>
       </div>
@@ -566,6 +567,113 @@
             <div class="field" style="grid-column: 1 / -1;">
               <label for="address">Residential address</label>
               <textarea id="address" placeholder="Enter your residential address"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="z83-details">
+          <div class="panel-header">
+            <h2>Z83 application details</h2>
+            <span class="chip">Auto-fill</span>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="citizenship">Citizenship</label>
+              <select id="citizenship">
+                <option value="">Select citizenship</option>
+                <option value="South African">South African</option>
+                <option value="Permanent resident">Permanent resident</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="nationality">Nationality</label>
+              <input id="nationality" type="text" placeholder="Enter nationality" />
+            </div>
+
+            <div class="field">
+              <label for="postalAddress">Postal address</label>
+              <textarea id="postalAddress" placeholder="Enter postal address"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="province">Province</label>
+              <input id="province" type="text" placeholder="Enter province" />
+            </div>
+
+            <div class="field">
+              <label for="postalCode">Postal code</label>
+              <input id="postalCode" type="text" placeholder="Enter postal code" />
+            </div>
+
+            <div class="field">
+              <label for="country">Country</label>
+              <input id="country" type="text" value="South Africa" placeholder="Enter country" />
+            </div>
+
+            <div class="field">
+              <label for="disability">Disability</label>
+              <select id="disability">
+                <option value="">Select</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="driverLicense">Driver's licence</label>
+              <select id="driverLicense">
+                <option value="">Select</option>
+                <option value="No">No</option>
+                <option value="Code 1">Code 1</option>
+                <option value="Code 2">Code 2</option>
+                <option value="Code 3">Code 3</option>
+                <option value="Code 4">Code 4</option>
+                <option value="Code 8">Code 8</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="positionApplied">Position applied for</label>
+              <input id="positionApplied" type="text" placeholder="Enter the job title" />
+            </div>
+
+            <div class="field">
+              <label for="department">Department / organisation</label>
+              <input id="department" type="text" placeholder="Enter department or office" />
+            </div>
+
+            <div class="field">
+              <label for="referenceNumber">Reference number</label>
+              <input id="referenceNumber" type="text" placeholder="Enter vacancy reference number" />
+            </div>
+
+            <div class="field">
+              <label for="employmentStatus">Employment status</label>
+              <select id="employmentStatus">
+                <option value="">Select</option>
+                <option value="Unemployed">Unemployed</option>
+                <option value="Employed">Employed</option>
+                <option value="Self-employed">Self-employed</option>
+                <option value="Student">Student</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="startDate">Available to start</label>
+              <input id="startDate" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="noticePeriod">Notice period</label>
+              <input id="noticePeriod" type="text" placeholder="e.g. 1 month" />
+            </div>
+
+            <div class="field">
+              <label for="salaryExpectation">Salary expectation</label>
+              <input id="salaryExpectation" type="text" placeholder="e.g. R 250 000 / annum" />
             </div>
           </div>
         </section>
@@ -696,6 +804,23 @@
             phone: '',
             address: ''
           },
+          additional: {
+            citizenship: '',
+            nationality: '',
+            postalAddress: '',
+            province: '',
+            postalCode: '',
+            country: 'South Africa',
+            disability: '',
+            driverLicense: '',
+            positionApplied: '',
+            department: '',
+            referenceNumber: '',
+            employmentStatus: '',
+            startDate: '',
+            noticePeriod: '',
+            salaryExpectation: ''
+          },
           references: {
             ref1: {
               name: '',
@@ -730,6 +855,10 @@
               ...base.profile.personal,
               ...(profile.personal || {})
             },
+            additional: {
+              ...base.profile.additional,
+              ...(profile.additional || {})
+            },
             references: {
               ...base.profile.references,
               ...(profile.references || {})
@@ -750,6 +879,15 @@
         }
       };
 
+      const saveStoredProfile = (profile) => {
+        const payload = {
+          ...profile,
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        window.dispatchEvent(new CustomEvent('auto83-profile-updated', { detail: payload }));
+      };
+
       const setStatusText = (text) => {
         if (!saveProfileBtn) return;
         const originalText = saveProfileBtn.dataset.originalText || 'Save profile';
@@ -758,6 +896,157 @@
         setTimeout(() => {
           saveProfileBtn.textContent = originalText;
         }, 1200);
+      };
+
+      const createZ83Document = (profile) => {
+        const personal = profile?.profile?.personal || {};
+        const additional = profile?.profile?.additional || {};
+        const references = profile?.profile?.references || {};
+        const education = Array.isArray(profile?.profile?.education) ? profile.profile.education : [];
+        const employment = Array.isArray(profile?.profile?.employment) ? profile.profile.employment : [];
+        const firstName = profile?.firstName || personal.firstName || '';
+        const lastName = profile?.lastName || personal.lastName || '';
+        const fullName = `${firstName} ${lastName}`.trim() || 'Applicant';
+        const idNumber = profile?.idNumber || personal.idNumber || 'Not provided';
+        const dob = personal.dob || 'Not provided';
+        const email = profile?.email || personal.email || 'Not provided';
+        const phone = personal.phone || 'Not provided';
+        const address = personal.address || 'Not provided';
+        const citizenship = additional.citizenship || 'Not provided';
+        const nationality = additional.nationality || 'Not provided';
+        const postalAddress = additional.postalAddress || 'Not provided';
+        const province = additional.province || 'Not provided';
+        const postalCode = additional.postalCode || 'Not provided';
+        const disability = additional.disability || 'Not provided';
+        const driverLicense = additional.driverLicense || 'Not provided';
+        const positionApplied = additional.positionApplied || 'Not provided';
+        const department = additional.department || 'Not provided';
+        const referenceNumber = additional.referenceNumber || 'Not provided';
+        const employmentStatus = additional.employmentStatus || 'Not provided';
+        const startDate = additional.startDate || 'Not provided';
+        const noticePeriod = additional.noticePeriod || 'Not provided';
+        const salaryExpectation = additional.salaryExpectation || 'Not provided';
+        const ref1 = references.ref1 || {};
+        const ref2 = references.ref2 || {};
+
+        const qualificationMarkup = education.length
+          ? education.map((item) => `<li>${item.title || 'Qualification'} — ${item.institution || item.school || 'Institution'}${item.year ? ` (${item.year})` : ''}</li>`).join('')
+          : '<li>No qualifications captured</li>';
+
+        const employmentMarkup = employment.length
+          ? employment.map((item) => `<li>${item.title || 'Role'} — ${item.employer || item.company || 'Employer'}${item.period ? ` (${item.period})` : ''}</li>`).join('')
+          : '<li>No employment history captured</li>';
+
+        return `<!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Z83 Application</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 24px; color: #111; background: #fff; }
+                .page { max-width: 900px; margin: 0 auto; }
+                h1 { text-align: center; font-size: 28px; margin-bottom: 10px; }
+                .meta { text-align: center; color: #444; margin-bottom: 18px; }
+                .section { border: 1px solid #d7d7d7; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+                .section h2 { font-size: 16px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+                .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
+                .field { display: flex; flex-direction: column; gap: 4px; }
+                .label { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; }
+                .value { font-size: 13px; border-bottom: 1px solid #ddd; min-height: 20px; padding-bottom: 3px; }
+                ul { margin: 0; padding-left: 18px; }
+                li { margin-bottom: 6px; }
+                @media print { .page { max-width: none; } }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <h1>Z83 Application Form</h1>
+                <div class="meta">Auto-generated from saved profile • ${new Date().toLocaleDateString()}</div>
+
+                <div class="section">
+                  <h2>Personal details</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Full name</div><div class="value">${fullName}</div></div>
+                    <div class="field"><div class="label">ID number</div><div class="value">${idNumber}</div></div>
+                    <div class="field"><div class="label">Date of birth</div><div class="value">${dob}</div></div>
+                    <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
+                    <div class="field"><div class="label">Phone</div><div class="value">${phone}</div></div>
+                    <div class="field"><div class="label">Residential address</div><div class="value">${address}</div></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h2>Z83 application details</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Citizenship</div><div class="value">${citizenship}</div></div>
+                    <div class="field"><div class="label">Nationality</div><div class="value">${nationality}</div></div>
+                    <div class="field"><div class="label">Postal address</div><div class="value">${postalAddress}</div></div>
+                    <div class="field"><div class="label">Province</div><div class="value">${province}</div></div>
+                    <div class="field"><div class="label">Postal code</div><div class="value">${postalCode}</div></div>
+                    <div class="field"><div class="label">Country</div><div class="value">South Africa</div></div>
+                    <div class="field"><div class="label">Disability</div><div class="value">${disability}</div></div>
+                    <div class="field"><div class="label">Driver's licence</div><div class="value">${driverLicense}</div></div>
+                    <div class="field"><div class="label">Position applied for</div><div class="value">${positionApplied}</div></div>
+                    <div class="field"><div class="label">Department / organisation</div><div class="value">${department}</div></div>
+                    <div class="field"><div class="label">Reference number</div><div class="value">${referenceNumber}</div></div>
+                    <div class="field"><div class="label">Employment status</div><div class="value">${employmentStatus}</div></div>
+                    <div class="field"><div class="label">Available to start</div><div class="value">${startDate}</div></div>
+                    <div class="field"><div class="label">Notice period</div><div class="value">${noticePeriod}</div></div>
+                    <div class="field"><div class="label">Salary expectation</div><div class="value">${salaryExpectation}</div></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h2>Education and qualifications</h2>
+                  <ul>${qualificationMarkup}</ul>
+                </div>
+
+                <div class="section">
+                  <h2>Employment history</h2>
+                  <ul>${employmentMarkup}</ul>
+                </div>
+
+                <div class="section">
+                  <h2>References</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Reference 1 name</div><div class="value">${ref1.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 role</div><div class="value">${ref1.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 phone</div><div class="value">${ref1.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 email</div><div class="value">${ref1.email || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 name</div><div class="value">${ref2.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 role</div><div class="value">${ref2.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 phone</div><div class="value">${ref2.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 email</div><div class="value">${ref2.email || 'Not provided'}</div></div>
+                  </div>
+                </div>
+              </div>
+            </body>
+          </html>`;
+      };
+
+      const generateZ83 = () => {
+        const profile = getStoredProfile();
+        const formMarkup = createZ83Document(profile || {});
+        const z83Window = window.open('', '_blank', 'width=1200,height=900');
+
+        if (!z83Window) {
+          alert('Please allow pop-ups to generate the Z83 preview.');
+          return;
+        }
+
+        z83Window.document.open();
+        z83Window.document.write(formMarkup);
+        z83Window.document.close();
+
+        setTimeout(() => {
+          try {
+            z83Window.focus();
+            z83Window.print();
+          } catch (error) {
+            console.error('Unable to print Z83 preview:', error);
+          }
+        }, 300);
       };
 
       const updateIdentity = (profile) => {
@@ -801,6 +1090,23 @@
         email: document.getElementById('email').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         address: document.getElementById('address').value.trim(),
+        additional: {
+          citizenship: document.getElementById('citizenship').value.trim(),
+          nationality: document.getElementById('nationality').value.trim(),
+          postalAddress: document.getElementById('postalAddress').value.trim(),
+          province: document.getElementById('province').value.trim(),
+          postalCode: document.getElementById('postalCode').value.trim(),
+          country: document.getElementById('country').value.trim() || 'South Africa',
+          disability: document.getElementById('disability').value.trim(),
+          driverLicense: document.getElementById('driverLicense').value.trim(),
+          positionApplied: document.getElementById('positionApplied').value.trim(),
+          department: document.getElementById('department').value.trim(),
+          referenceNumber: document.getElementById('referenceNumber').value.trim(),
+          employmentStatus: document.getElementById('employmentStatus').value.trim(),
+          startDate: document.getElementById('startDate').value,
+          noticePeriod: document.getElementById('noticePeriod').value.trim(),
+          salaryExpectation: document.getElementById('salaryExpectation').value.trim()
+        },
         references: {
           ref1: {
             name: document.getElementById('refName1').value.trim(),
@@ -876,6 +1182,7 @@
       const fillFormData = (data) => {
         const profile = data.profile || {};
         const personal = profile.personal || {};
+        const additional = profile.additional || {};
         const references = profile.references || {};
 
         document.getElementById('firstName').value = data.firstName || personal.firstName || '';
@@ -885,6 +1192,21 @@
         document.getElementById('email').value = data.email || personal.email || '';
         document.getElementById('phone').value = personal.phone || '';
         document.getElementById('address').value = personal.address || '';
+        document.getElementById('citizenship').value = additional.citizenship || '';
+        document.getElementById('nationality').value = additional.nationality || '';
+        document.getElementById('postalAddress').value = additional.postalAddress || '';
+        document.getElementById('province').value = additional.province || '';
+        document.getElementById('postalCode').value = additional.postalCode || '';
+        document.getElementById('country').value = additional.country || 'South Africa';
+        document.getElementById('disability').value = additional.disability || '';
+        document.getElementById('driverLicense').value = additional.driverLicense || '';
+        document.getElementById('positionApplied').value = additional.positionApplied || '';
+        document.getElementById('department').value = additional.department || '';
+        document.getElementById('referenceNumber').value = additional.referenceNumber || '';
+        document.getElementById('employmentStatus').value = additional.employmentStatus || '';
+        document.getElementById('startDate').value = additional.startDate || '';
+        document.getElementById('noticePeriod').value = additional.noticePeriod || '';
+        document.getElementById('salaryExpectation').value = additional.salaryExpectation || '';
 
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
@@ -924,13 +1246,17 @@
               phone: formData.phone,
               address: formData.address
             },
+            additional: {
+              ...(currentProfile.profile?.additional || {}),
+              ...(formData.additional || {})
+            },
             references: formData.references,
             education: Array.isArray(currentProfile.profile?.education) ? currentProfile.profile.education : defaultProfile.profile.education,
             employment: Array.isArray(currentProfile.profile?.employment) ? currentProfile.profile.employment : defaultProfile.profile.employment
           }
         };
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        saveStoredProfile(payload);
         updateIdentity(payload);
         updateCounts(payload);
         renderEducationList();
@@ -967,7 +1293,7 @@
 
         const updatedProfile = getStoredProfile();
         updatedProfile.profile.education = education;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+        saveStoredProfile(updatedProfile);
         renderEducationList();
       };
 
@@ -992,7 +1318,7 @@
 
         const updatedProfile = getStoredProfile();
         updatedProfile.profile.employment = employment;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+        saveStoredProfile(updatedProfile);
         renderEmploymentList();
       };
 
@@ -1015,7 +1341,7 @@
         });
 
         profile.profile.education = education;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        saveStoredProfile(profile);
         renderEducationList();
       };
 
@@ -1038,7 +1364,7 @@
         });
 
         profile.profile.employment = employment;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        saveStoredProfile(profile);
         renderEmploymentList();
       };
 
@@ -1049,6 +1375,11 @@
         renderEducationList();
         renderEmploymentList();
       };
+
+      const generateZ83Btn = document.getElementById('generate-z83-profile');
+      if (generateZ83Btn) {
+        generateZ83Btn.addEventListener('click', generateZ83);
+      }
 
       if (saveProfileBtn) {
         saveProfileBtn.dataset.originalText = saveProfileBtn.textContent;
@@ -1068,6 +1399,9 @@
 
       const liveInputs = [
         'firstName', 'lastName', 'idNumber', 'dob', 'email', 'phone', 'address',
+        'citizenship', 'nationality', 'postalAddress', 'province', 'postalCode', 'country',
+        'disability', 'driverLicense', 'positionApplied', 'department', 'referenceNumber',
+        'employmentStatus', 'startDate', 'noticePeriod', 'salaryExpectation',
         'refName1', 'refRole1', 'refPhone1', 'refEmail1',
         'refName2', 'refRole2', 'refPhone2', 'refEmail2'
       ];
@@ -1094,7 +1428,7 @@
           const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
           education.splice(Number(index), 1);
           profile.profile.education = education;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+          saveStoredProfile(profile);
           renderEducationList();
           return;
         }
@@ -1104,7 +1438,7 @@
           const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
           employment.splice(Number(index), 1);
           profile.profile.employment = employment;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+          saveStoredProfile(profile);
           renderEmploymentList();
           return;
         }

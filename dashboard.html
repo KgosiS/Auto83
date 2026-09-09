@@ -615,7 +615,7 @@
 
         <div class="header-actions">
           <button class="ghost-btn" type="button">Export</button>
-          <button class="primary-btn" type="button">Generate Z83</button>
+          <button id="generate-z83-dashboard" class="primary-btn" type="button">Generate Z83</button>
           <button id="sign-out" class="ghost-btn" type="button">Sign out</button>
         </div>
       </div>
@@ -624,72 +624,48 @@
         <div class="stat-card">
           <div class="stat-label">
             <span>Profile status</span>
-            <span class="stat-icon">✓</span>
+            <span class="stat-icon">%</span>
           </div>
-          <div class="stat-value">92%</div>
-          <div class="stat-meta">Profile completeness</div>
+          <div id="profile-progress-value" class="stat-value">0%</div>
+          <div id="profile-progress-meta" class="stat-meta">Profile completeness</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">
-            <span>Z83 forms</span>
-            <span class="stat-icon">Z</span>
+            <span>Qualifications</span>
+            <span class="stat-icon">Q</span>
           </div>
-          <div class="stat-value">14</div>
-          <div class="stat-meta">Generated this year</div>
+          <div id="qualification-count" class="stat-value">0</div>
+          <div id="qualification-meta" class="stat-meta">Saved qualifications</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">
-            <span>Applications</span>
-            <span class="stat-icon">A</span>
+            <span>Employment</span>
+            <span class="stat-icon">E</span>
           </div>
-          <div class="stat-value">6</div>
-          <div class="stat-meta">Active submissions</div>
+          <div id="employment-count" class="stat-value">0</div>
+          <div id="employment-meta" class="stat-meta">Saved records</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">
-            <span>Saved time</span>
-            <span class="stat-icon">⏱</span>
+            <span>References</span>
+            <span class="stat-icon">R</span>
           </div>
-          <div class="stat-value">8h</div>
-          <div class="stat-meta">Automated this month</div>
+          <div id="reference-count" class="stat-value">0</div>
+          <div id="reference-meta" class="stat-meta">Saved references</div>
         </div>
       </section>
 
       <section class="content-grid">
         <div class="panel">
           <div class="panel-header">
-            <h3>Recent Z83 forms</h3>
-            <span class="chip">Updated today</span>
+            <h3>Profile activity</h3>
+            <span id="activity-status" class="chip">No saved data</span>
           </div>
 
-          <div class="z83-list">
-            <div class="form-item">
-              <div class="item-meta">
-                <strong>Department of Health</strong>
-                <span>Senior Admin Officer • 25 Aug 2026</span>
-              </div>
-              <span class="status-badge ready">Ready</span>
-            </div>
-
-            <div class="form-item">
-              <div class="item-meta">
-                <strong>City of Tshwane</strong>
-                <span>Public Relations Clerk • 18 Aug 2026</span>
-              </div>
-              <span class="status-badge ready">Ready</span>
-            </div>
-
-            <div class="form-item">
-              <div class="item-meta">
-                <strong>National Treasury</strong>
-                <span>Junior Analyst • 12 Aug 2026</span>
-              </div>
-              <span class="status-badge draft">Draft</span>
-            </div>
-          </div>
+          <div id="profile-activity" class="z83-list"></div>
         </div>
 
         <div class="right-stack">
@@ -699,26 +675,26 @@
             <div class="progress-wrap">
               <div class="progress-row">
                 <span>Personal</span>
-                <div class="bar"><div class="fill" style="width: 94%;"></div></div>
-                <strong>94%</strong>
+                <div class="bar"><div class="fill"></div></div>
+                <strong>0%</strong>
               </div>
 
               <div class="progress-row">
                 <span>Education</span>
-                <div class="bar"><div class="fill" style="width: 76%;"></div></div>
-                <strong>76%</strong>
+                <div class="bar"><div class="fill"></div></div>
+                <strong>0%</strong>
               </div>
 
               <div class="progress-row">
                 <span>Work</span>
-                <div class="bar"><div class="fill" style="width: 82%;"></div></div>
-                <strong>82%</strong>
+                <div class="bar"><div class="fill"></div></div>
+                <strong>0%</strong>
               </div>
 
               <div class="progress-row">
                 <span>References</span>
-                <div class="bar"><div class="fill" style="width: 68%;"></div></div>
-                <strong>68%</strong>
+                <div class="bar"><div class="fill"></div></div>
+                <strong>0%</strong>
               </div>
             </div>
           </div>
@@ -729,17 +705,17 @@
             <div class="summary-list">
               <div class="summary-item">
                 <span>Last saved</span>
-                <strong>Today, 09:42</strong>
+                <strong id="last-saved">Not saved yet</strong>
               </div>
 
               <div class="summary-item">
-                <span>Next deadline</span>
-                <strong>Tomorrow</strong>
+                <span>Profile state</span>
+                <strong id="profile-state">Not started</strong>
               </div>
 
               <div class="summary-item">
-                <span>Documents</span>
-                <strong>4 files</strong>
+                <span>Completed fields</span>
+                <strong id="completed-fields">0 of 9</strong>
               </div>
             </div>
           </div>
@@ -788,6 +764,164 @@
         }
       };
 
+      const createZ83Document = (profile) => {
+        const personal = profile?.profile?.personal || {};
+        const additional = profile?.profile?.additional || {};
+        const references = profile?.profile?.references || {};
+        const education = Array.isArray(profile?.profile?.education) ? profile.profile.education : [];
+        const employment = Array.isArray(profile?.profile?.employment) ? profile.profile.employment : [];
+        const firstName = profile?.firstName || personal.firstName || '';
+        const lastName = profile?.lastName || personal.lastName || '';
+        const fullName = `${firstName} ${lastName}`.trim() || 'Applicant';
+        const idNumber = profile?.idNumber || personal.idNumber || 'Not provided';
+        const dob = personal.dob || 'Not provided';
+        const email = profile?.email || personal.email || 'Not provided';
+        const phone = personal.phone || 'Not provided';
+        const address = personal.address || 'Not provided';
+        const citizenship = additional.citizenship || 'Not provided';
+        const nationality = additional.nationality || 'Not provided';
+        const postalAddress = additional.postalAddress || 'Not provided';
+        const province = additional.province || 'Not provided';
+        const postalCode = additional.postalCode || 'Not provided';
+        const disability = additional.disability || 'Not provided';
+        const driverLicense = additional.driverLicense || 'Not provided';
+        const positionApplied = additional.positionApplied || 'Not provided';
+        const department = additional.department || 'Not provided';
+        const referenceNumber = additional.referenceNumber || 'Not provided';
+        const employmentStatus = additional.employmentStatus || 'Not provided';
+        const startDate = additional.startDate || 'Not provided';
+        const noticePeriod = additional.noticePeriod || 'Not provided';
+        const salaryExpectation = additional.salaryExpectation || 'Not provided';
+        const ref1 = references.ref1 || {};
+        const ref2 = references.ref2 || {};
+
+        const qualificationMarkup = education.length
+          ? education.map((item) => `<li>${item.title || 'Qualification'} — ${item.institution || item.school || 'Institution'}${item.year ? ` (${item.year})` : ''}</li>`).join('')
+          : '<li>No qualifications captured</li>';
+
+        const employmentMarkup = employment.length
+          ? employment.map((item) => `<li>${item.title || 'Role'} — ${item.employer || item.company || 'Employer'}${item.period ? ` (${item.period})` : ''}</li>`).join('')
+          : '<li>No employment history captured</li>';
+
+        return `<!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Z83 Application</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 24px; color: #111; background: #fff; }
+                .page { max-width: 900px; margin: 0 auto; }
+                h1 { text-align: center; font-size: 28px; margin-bottom: 10px; }
+                .meta { text-align: center; color: #444; margin-bottom: 18px; }
+                .section { border: 1px solid #d7d7d7; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+                .section h2 { font-size: 16px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+                .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
+                .field { display: flex; flex-direction: column; gap: 4px; }
+                .label { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; }
+                .value { font-size: 13px; border-bottom: 1px solid #ddd; min-height: 20px; padding-bottom: 3px; }
+                ul { margin: 0; padding-left: 18px; }
+                li { margin-bottom: 6px; }
+                @media print { .page { max-width: none; } }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <h1>Z83 Application Form</h1>
+                <div class="meta">Auto-generated from saved profile • ${new Date().toLocaleDateString()}</div>
+
+                <div class="section">
+                  <h2>Personal details</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Full name</div><div class="value">${fullName}</div></div>
+                    <div class="field"><div class="label">ID number</div><div class="value">${idNumber}</div></div>
+                    <div class="field"><div class="label">Date of birth</div><div class="value">${dob}</div></div>
+                    <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
+                    <div class="field"><div class="label">Phone</div><div class="value">${phone}</div></div>
+                    <div class="field"><div class="label">Residential address</div><div class="value">${address}</div></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h2>Z83 application details</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Citizenship</div><div class="value">${citizenship}</div></div>
+                    <div class="field"><div class="label">Nationality</div><div class="value">${nationality}</div></div>
+                    <div class="field"><div class="label">Postal address</div><div class="value">${postalAddress}</div></div>
+                    <div class="field"><div class="label">Province</div><div class="value">${province}</div></div>
+                    <div class="field"><div class="label">Postal code</div><div class="value">${postalCode}</div></div>
+                    <div class="field"><div class="label">Country</div><div class="value">South Africa</div></div>
+                    <div class="field"><div class="label">Disability</div><div class="value">${disability}</div></div>
+                    <div class="field"><div class="label">Driver's licence</div><div class="value">${driverLicense}</div></div>
+                    <div class="field"><div class="label">Position applied for</div><div class="value">${positionApplied}</div></div>
+                    <div class="field"><div class="label">Department / organisation</div><div class="value">${department}</div></div>
+                    <div class="field"><div class="label">Reference number</div><div class="value">${referenceNumber}</div></div>
+                    <div class="field"><div class="label">Employment status</div><div class="value">${employmentStatus}</div></div>
+                    <div class="field"><div class="label">Available to start</div><div class="value">${startDate}</div></div>
+                    <div class="field"><div class="label">Notice period</div><div class="value">${noticePeriod}</div></div>
+                    <div class="field"><div class="label">Salary expectation</div><div class="value">${salaryExpectation}</div></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h2>Education and qualifications</h2>
+                  <ul>${qualificationMarkup}</ul>
+                </div>
+
+                <div class="section">
+                  <h2>Employment history</h2>
+                  <ul>${employmentMarkup}</ul>
+                </div>
+
+                <div class="section">
+                  <h2>References</h2>
+                  <div class="grid">
+                    <div class="field"><div class="label">Reference 1 name</div><div class="value">${ref1.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 role</div><div class="value">${ref1.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 phone</div><div class="value">${ref1.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 1 email</div><div class="value">${ref1.email || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 name</div><div class="value">${ref2.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 role</div><div class="value">${ref2.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 phone</div><div class="value">${ref2.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 2 email</div><div class="value">${ref2.email || 'Not provided'}</div></div>
+                  </div>
+                </div>
+              </div>
+            </body>
+          </html>`;
+      };
+
+      const generateZ83 = () => {
+        const profile = getStoredProfile();
+        const formMarkup = createZ83Document(profile || {});
+        const z83Window = window.open('', '_blank', 'width=1200,height=900');
+
+        if (!z83Window) {
+          alert('Please allow pop-ups to generate the Z83 preview.');
+          return;
+        }
+
+        z83Window.document.open();
+        z83Window.document.write(formMarkup);
+        z83Window.document.close();
+
+        setTimeout(() => {
+          try {
+            z83Window.focus();
+            z83Window.print();
+          } catch (error) {
+            console.error('Unable to print Z83 preview:', error);
+          }
+        }, 300);
+      };
+
+      const escapeHtml = (value) => String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+
       const updateDashboard = () => {
         const profile = getStoredProfile();
         const firstName = profile?.firstName || '';
@@ -807,61 +941,92 @@
         const personal = profile?.profile?.personal || {};
         const education = Array.isArray(profile?.profile?.education) ? profile.profile.education : [];
         const employment = Array.isArray(profile?.profile?.employment) ? profile.profile.employment : [];
+        const references = profile?.profile?.references || {};
+        const referenceCount = [references.ref1, references.ref2]
+          .filter((reference) => reference?.name).length;
 
-        const calcProgress = () => {
-          const fields = [
-            !!(personal.firstName || firstName),
-            !!(personal.lastName || lastName),
-            !!(personal.email || profile?.email),
-            !!(personal.phone),
-            !!(personal.address),
-            !!(personal.idNumber || profile?.idNumber),
-            education.length > 0,
-            employment.length > 0,
-            !!(profile?.profile?.references?.ref1?.name || profile?.profile?.references?.ref2?.name)
-          ];
+        const personalFields = [
+          !!(personal.firstName || firstName),
+          !!(personal.lastName || lastName),
+          !!(personal.email || profile?.email),
+          !!personal.phone,
+          !!personal.address,
+          !!(personal.idNumber || profile?.idNumber)
+        ];
+        const completedFields = personalFields.filter(Boolean).length +
+          (education.length > 0 ? 1 : 0) +
+          (employment.length > 0 ? 1 : 0) +
+          (referenceCount > 0 ? 1 : 0);
+        const progressValue = Math.round((completedFields / 9) * 100);
+        const progressValues = [
+          Math.round((personalFields.filter(Boolean).length / personalFields.length) * 100),
+          education.length > 0 ? 100 : 0,
+          employment.length > 0 ? 100 : 0,
+          referenceCount > 0 ? 100 : 0
+        ];
 
-          const completed = fields.filter(Boolean).length;
-          return Math.round((completed / fields.length) * 100);
+        const valueElements = {
+          progress: document.getElementById('profile-progress-value'),
+          progressMeta: document.getElementById('profile-progress-meta'),
+          education: document.getElementById('qualification-count'),
+          employment: document.getElementById('employment-count'),
+          references: document.getElementById('reference-count'),
+          educationMeta: document.getElementById('qualification-meta'),
+          employmentMeta: document.getElementById('employment-meta'),
+          referenceMeta: document.getElementById('reference-meta'),
+          lastSaved: document.getElementById('last-saved'),
+          profileState: document.getElementById('profile-state'),
+          completedFields: document.getElementById('completed-fields'),
+          activityStatus: document.getElementById('activity-status'),
+          activity: document.getElementById('profile-activity')
         };
 
-        const progressValue = calcProgress();
-        const statCard = document.querySelector('.stat-card .stat-value');
-        if (statCard) {
-          statCard.textContent = `${progressValue}%`;
-        }
-
-        const statMeta = document.querySelectorAll('.stat-card .stat-meta');
-        if (statMeta[0]) {
-          statMeta[0].textContent = progressValue >= 100 ? 'Profile complete' : 'Profile completeness';
-        }
+        if (valueElements.progress) valueElements.progress.textContent = `${progressValue}%`;
+        if (valueElements.progressMeta) valueElements.progressMeta.textContent = progressValue === 100 ? 'Profile complete' : 'Profile completeness';
+        if (valueElements.education) valueElements.education.textContent = education.length;
+        if (valueElements.employment) valueElements.employment.textContent = employment.length;
+        if (valueElements.references) valueElements.references.textContent = referenceCount;
+        if (valueElements.educationMeta) valueElements.educationMeta.textContent = education.length === 1 ? 'Saved qualification' : 'Saved qualifications';
+        if (valueElements.employmentMeta) valueElements.employmentMeta.textContent = employment.length === 1 ? 'Saved record' : 'Saved records';
+        if (valueElements.referenceMeta) valueElements.referenceMeta.textContent = referenceCount === 1 ? 'Saved reference' : 'Saved references';
 
         const progressBars = document.querySelectorAll('.fill');
         const progressLabels = document.querySelectorAll('.progress-row strong');
-        const values = [
-          Math.min(94, Math.max(22, progressValue)),
-          education.length ? 80 : 20,
-          employment.length ? 82 : 24,
-          (profile?.profile?.references?.ref1?.name || profile?.profile?.references?.ref2?.name) ? 72 : 18
-        ];
 
         progressBars.forEach((bar, index) => {
-          bar.style.width = `${values[index]}%`;
+          bar.style.width = `${progressValues[index]}%`;
         });
 
         progressLabels.forEach((label, index) => {
-          label.textContent = `${values[index]}%`;
+          label.textContent = `${progressValues[index]}%`;
         });
 
-        const quickSummary = document.querySelectorAll('.summary-item strong');
-        if (quickSummary[0]) {
-          quickSummary[0].textContent = profile?.updatedAt ? new Date(profile.updatedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Not saved yet';
+        if (valueElements.lastSaved) {
+          valueElements.lastSaved.textContent = profile?.updatedAt
+            ? new Date(profile.updatedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+            : 'Not saved yet';
         }
-        if (quickSummary[1]) {
-          quickSummary[1].textContent = employment.length ? 'Ready to apply' : 'Update profile';
+        if (valueElements.profileState) {
+          valueElements.profileState.textContent = profile?.draft ? 'Draft' : progressValue > 0 ? 'In progress' : 'Not started';
         }
-        if (quickSummary[2]) {
-          quickSummary[2].textContent = `${education.length + employment.length} items`;
+        if (valueElements.completedFields) valueElements.completedFields.textContent = `${completedFields} of 9`;
+        if (valueElements.activityStatus) valueElements.activityStatus.textContent = profile?.updatedAt ? 'Live profile' : 'No saved data';
+        if (valueElements.activity) {
+          const activity = [
+            ['Personal details', `${personalFields.filter(Boolean).length} of ${personalFields.length} fields`, personalFields.every(Boolean)],
+            ['Qualifications', `${education.length} saved`, education.length > 0],
+            ['Employment history', `${employment.length} saved`, employment.length > 0],
+            ['References', `${referenceCount} saved`, referenceCount > 0]
+          ];
+          valueElements.activity.innerHTML = activity.map(([title, detail, complete]) => `
+            <div class="form-item">
+              <div class="item-meta">
+                <strong>${escapeHtml(title)}</strong>
+                <span>${escapeHtml(detail)}</span>
+              </div>
+              <span class="status-badge ${complete ? 'ready' : 'draft'}">${complete ? 'Complete' : 'Pending'}</span>
+            </div>
+          `).join('');
         }
       };
 
@@ -872,8 +1037,14 @@
         });
       });
 
+      const generateBtn = document.getElementById('generate-z83-dashboard');
+      if (generateBtn) {
+        generateBtn.addEventListener('click', generateZ83);
+      }
+
       updateDashboard();
       window.addEventListener('storage', updateDashboard);
+      window.addEventListener('auto83-profile-updated', updateDashboard);
       window.addEventListener('focus', updateDashboard);
     });
   </script>
