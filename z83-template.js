@@ -21,6 +21,15 @@ window.createOfficialZ83Document = async (profile = {}) => {
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
   };
   const setText = (name, entry) => form.getTextField(name).setText(value(entry));
+  const setTextIfPresent = (names, entry) => {
+    for (const name of names) {
+      try {
+        form.getTextField(name).setText(value(entry));
+        return;
+      } catch (error) {
+      }
+    }
+  };
   const setDropdown = (name, entry) => {
     const field = form.getDropdown(name);
     const selected = value(entry);
@@ -46,6 +55,11 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
   setText('Passport2 number', personal.passportNumber);
+  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.nationality);
+  setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector);
+  setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector);
+  setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : '');
+  setTextIfPresent(['Reg. No.', 'Reg No'], personal.registrationNumber);
   setText('Preferred language for correspondence', personal.preferredLanguage);
   setText('Contact details in terms of the above', `${personal.address || ''}${personal.phone ? ` | ${personal.phone}` : ''}${email ? ` | ${email}` : ''}`.trim());
 
@@ -62,6 +76,12 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
+  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecordDetails);
+  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCaseDetails);
+  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconductDetails);
+  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCaseDetails);
+  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinaryDetails);
+  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterestsDetails);
 
   [1, 2, 3, 4].forEach((row, index) => {
     const item = education[index] || {};
@@ -95,7 +115,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
     setText(`Tel No office hoursRow${row}`, item.phone);
   });
 
-  setText('Date', date(new Date().toISOString().slice(0, 10)));
+  setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   setText('Signature', personal.signature);
   setText('Initials', personal.initials);
 

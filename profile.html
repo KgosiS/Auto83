@@ -555,6 +555,11 @@
             </div>
 
             <div class="field">
+              <label for="passportNumber">Passport number</label>
+              <input id="passportNumber" type="text" placeholder="Enter passport number" />
+            </div>
+
+            <div class="field">
               <label for="email">Email address</label>
               <input id="email" type="email" placeholder="Enter your email address" />
             </div>
@@ -636,6 +641,61 @@
             </div>
 
             <div class="field">
+              <label for="race">Race</label>
+              <select id="race"><option value="">Select</option><option value="African">African</option><option value="White">White</option><option value="Coloured">Coloured</option><option value="Indian">Indian</option><option value="Other">Other</option></select>
+            </div>
+
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender"><option value="">Select</option><option value="Female">Female</option><option value="Male">Male</option></select>
+            </div>
+
+            <div class="field">
+              <label for="workPermit">Valid work permit</label>
+              <select id="workPermit"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+            </div>
+
+            <div class="field">
+              <label for="preferredLanguage">Preferred language for correspondence</label>
+              <input id="preferredLanguage" type="text" placeholder="Enter preferred language" />
+            </div>
+
+            <div class="field">
+              <label for="communicationMethod">Method for correspondence</label>
+              <select id="communicationMethod"><option value="">Select</option><option value="Post">Post</option><option value="E-mail">E-mail</option><option value="Fax">Fax</option><option value="Tel">Tel</option></select>
+            </div>
+
+            <div class="field">
+              <label for="yearsPrivateSector">Years of private-sector experience</label>
+              <input id="yearsPrivateSector" type="number" min="0" step="1" />
+            </div>
+
+            <div class="field">
+              <label for="yearsPublicSector">Years of public-sector experience</label>
+              <input id="yearsPublicSector" type="number" min="0" step="1" />
+            </div>
+
+            <div class="field">
+              <label for="registrationDate">Professional registration date</label>
+              <input id="registrationDate" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="registrationNumber">Professional registration number</label>
+              <input id="registrationNumber" type="text" placeholder="Enter registration number" />
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="currentStudy">Current study (institution and qualification)</label>
+              <input id="currentStudy" type="text" placeholder="Enter institution and qualification" />
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="languageDetails">South African official language proficiency</label>
+              <textarea id="languageDetails" placeholder="List each language with speaking and writing/reading level"></textarea>
+            </div>
+
+            <div class="field">
               <label for="positionApplied">Position applied for</label>
               <input id="positionApplied" type="text" placeholder="Enter the job title" />
             </div>
@@ -675,6 +735,25 @@
               <label for="salaryExpectation">Salary expectation</label>
               <input id="salaryExpectation" type="text" placeholder="e.g. R 250 000 / annum" />
             </div>
+
+            <div class="field"><label for="criminalRecord">Convicted or found guilty of a criminal offence</label><select id="criminalRecord"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="criminalRecordDetails">Criminal offence details</label><textarea id="criminalRecordDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="pendingCriminalCase">Pending criminal case</label><select id="pendingCriminalCase"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="pendingCriminalCaseDetails">Pending criminal case details</label><textarea id="pendingCriminalCaseDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="dismissedMisconduct">Dismissed for misconduct from Public Service</label><select id="dismissedMisconduct"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="dismissedMisconductDetails">Dismissal details</label><textarea id="dismissedMisconductDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="pendingDisciplinaryCase">Pending disciplinary case</label><select id="pendingDisciplinaryCase"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="pendingDisciplinaryCaseDetails">Pending disciplinary case details</label><textarea id="pendingDisciplinaryCaseDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="resignedPendingDisciplinary">Resigned pending disciplinary proceedings</label><select id="resignedPendingDisciplinary"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="resignedPendingDisciplinaryDetails">Resignation details</label><textarea id="resignedPendingDisciplinaryDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="dischargedIllHealth">Discharged or retired on ill-health grounds</label><select id="dischargedIllHealth"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="stateBusinessInterests">Business with the State or State-contracted company</label><select id="stateBusinessInterests"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="stateBusinessInterestsDetails">Business interest details</label><textarea id="stateBusinessInterestsDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="relinquishBusinessInterests">Will you relinquish these interests if appointed?</label><select id="relinquishBusinessInterests"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field"><label for="publicServiceReappointmentCondition">Condition preventing Public Service reappointment</label><select id="publicServiceReappointmentCondition"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="field" style="grid-column: 1 / -1;"><label for="reappointmentConditionDetails">Previous department and condition details</label><textarea id="reappointmentConditionDetails" placeholder="Provide details if applicable"></textarea></div>
+            <div class="field"><label for="signature">Declaration signature</label><input id="signature" type="text" placeholder="Enter your full name as signature" /></div>
+            <div class="field"><label for="declarationDate">Declaration date</label><input id="declarationDate" type="date" /></div>
           </div>
         </section>
 
@@ -804,7 +883,37 @@
             dob: '',
             email: '',
             phone: '',
-            address: ''
+            address: '',
+            passportNumber: '',
+            race: '',
+            gender: '',
+            workPermit: '',
+            preferredLanguage: '',
+            communicationMethod: '',
+            yearsPrivateSector: '',
+            yearsPublicSector: '',
+            registrationDate: '',
+            registrationNumber: '',
+            currentStudy: '',
+            languageDetails: '',
+            criminalRecord: '',
+            criminalRecordDetails: '',
+            pendingCriminalCase: '',
+            pendingCriminalCaseDetails: '',
+            dismissedMisconduct: '',
+            dismissedMisconductDetails: '',
+            pendingDisciplinaryCase: '',
+            pendingDisciplinaryCaseDetails: '',
+            resignedPendingDisciplinary: '',
+            resignedPendingDisciplinaryDetails: '',
+            dischargedIllHealth: '',
+            stateBusinessInterests: '',
+            stateBusinessInterestsDetails: '',
+            relinquishBusinessInterests: '',
+            publicServiceReappointmentCondition: '',
+            reappointmentConditionDetails: '',
+            signature: '',
+            declarationDate: ''
           },
           additional: {
             citizenship: '',
@@ -1088,6 +1197,20 @@
         email: document.getElementById('email').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         address: document.getElementById('address').value.trim(),
+        passportNumber: document.getElementById('passportNumber').value.trim(),
+        race: document.getElementById('race').value.trim(),
+        gender: document.getElementById('gender').value.trim(),
+        workPermit: document.getElementById('workPermit').value.trim(),
+        preferredLanguage: document.getElementById('preferredLanguage').value.trim(),
+        communicationMethod: document.getElementById('communicationMethod').value.trim(),
+        yearsPrivateSector: document.getElementById('yearsPrivateSector').value.trim(),
+        yearsPublicSector: document.getElementById('yearsPublicSector').value.trim(),
+        registrationDate: document.getElementById('registrationDate').value,
+        registrationNumber: document.getElementById('registrationNumber').value.trim(),
+        currentStudy: document.getElementById('currentStudy').value.trim(),
+        languageDetails: document.getElementById('languageDetails').value.trim(),
+        signature: document.getElementById('signature').value.trim(),
+        declarationDate: document.getElementById('declarationDate').value,
         additional: {
           citizenship: document.getElementById('citizenship').value.trim(),
           nationality: document.getElementById('nationality').value.trim(),
@@ -1103,7 +1226,23 @@
           employmentStatus: document.getElementById('employmentStatus').value.trim(),
           startDate: document.getElementById('startDate').value,
           noticePeriod: document.getElementById('noticePeriod').value.trim(),
-          salaryExpectation: document.getElementById('salaryExpectation').value.trim()
+          salaryExpectation: document.getElementById('salaryExpectation').value.trim(),
+          criminalRecord: document.getElementById('criminalRecord').value.trim(),
+          criminalRecordDetails: document.getElementById('criminalRecordDetails').value.trim(),
+          pendingCriminalCase: document.getElementById('pendingCriminalCase').value.trim(),
+          pendingCriminalCaseDetails: document.getElementById('pendingCriminalCaseDetails').value.trim(),
+          dismissedMisconduct: document.getElementById('dismissedMisconduct').value.trim(),
+          dismissedMisconductDetails: document.getElementById('dismissedMisconductDetails').value.trim(),
+          pendingDisciplinaryCase: document.getElementById('pendingDisciplinaryCase').value.trim(),
+          pendingDisciplinaryCaseDetails: document.getElementById('pendingDisciplinaryCaseDetails').value.trim(),
+          resignedPendingDisciplinary: document.getElementById('resignedPendingDisciplinary').value.trim(),
+          resignedPendingDisciplinaryDetails: document.getElementById('resignedPendingDisciplinaryDetails').value.trim(),
+          dischargedIllHealth: document.getElementById('dischargedIllHealth').value.trim(),
+          stateBusinessInterests: document.getElementById('stateBusinessInterests').value.trim(),
+          stateBusinessInterestsDetails: document.getElementById('stateBusinessInterestsDetails').value.trim(),
+          relinquishBusinessInterests: document.getElementById('relinquishBusinessInterests').value.trim(),
+          publicServiceReappointmentCondition: document.getElementById('publicServiceReappointmentCondition').value.trim(),
+          reappointmentConditionDetails: document.getElementById('reappointmentConditionDetails').value.trim()
         },
         references: {
           ref1: {
@@ -1190,6 +1329,18 @@
         document.getElementById('email').value = data.email || personal.email || '';
         document.getElementById('phone').value = personal.phone || '';
         document.getElementById('address').value = personal.address || '';
+        document.getElementById('passportNumber').value = personal.passportNumber || '';
+        document.getElementById('race').value = personal.race || '';
+        document.getElementById('gender').value = personal.gender || '';
+        document.getElementById('workPermit').value = personal.workPermit || '';
+        document.getElementById('preferredLanguage').value = personal.preferredLanguage || '';
+        document.getElementById('communicationMethod').value = personal.communicationMethod || '';
+        document.getElementById('yearsPrivateSector').value = personal.yearsPrivateSector || '';
+        document.getElementById('yearsPublicSector').value = personal.yearsPublicSector || '';
+        document.getElementById('registrationDate').value = personal.registrationDate || '';
+        document.getElementById('registrationNumber').value = personal.registrationNumber || '';
+        document.getElementById('currentStudy').value = personal.currentStudy || '';
+        document.getElementById('languageDetails').value = personal.languageDetails || '';
         document.getElementById('citizenship').value = additional.citizenship || '';
         document.getElementById('nationality').value = additional.nationality || '';
         document.getElementById('postalAddress').value = additional.postalAddress || '';
@@ -1205,6 +1356,24 @@
         document.getElementById('startDate').value = additional.startDate || '';
         document.getElementById('noticePeriod').value = additional.noticePeriod || '';
         document.getElementById('salaryExpectation').value = additional.salaryExpectation || '';
+        document.getElementById('criminalRecord').value = personal.criminalRecord || '';
+        document.getElementById('criminalRecordDetails').value = personal.criminalRecordDetails || '';
+        document.getElementById('pendingCriminalCase').value = personal.pendingCriminalCase || '';
+        document.getElementById('pendingCriminalCaseDetails').value = personal.pendingCriminalCaseDetails || '';
+        document.getElementById('dismissedMisconduct').value = personal.dismissedMisconduct || '';
+        document.getElementById('dismissedMisconductDetails').value = personal.dismissedMisconductDetails || '';
+        document.getElementById('pendingDisciplinaryCase').value = personal.pendingDisciplinaryCase || '';
+        document.getElementById('pendingDisciplinaryCaseDetails').value = personal.pendingDisciplinaryCaseDetails || '';
+        document.getElementById('resignedPendingDisciplinary').value = personal.resignedPendingDisciplinary || '';
+        document.getElementById('resignedPendingDisciplinaryDetails').value = personal.resignedPendingDisciplinaryDetails || '';
+        document.getElementById('dischargedIllHealth').value = personal.dischargedIllHealth || '';
+        document.getElementById('stateBusinessInterests').value = personal.stateBusinessInterests || '';
+        document.getElementById('stateBusinessInterestsDetails').value = personal.stateBusinessInterestsDetails || '';
+        document.getElementById('relinquishBusinessInterests').value = personal.relinquishBusinessInterests || '';
+        document.getElementById('publicServiceReappointmentCondition').value = personal.publicServiceReappointmentCondition || '';
+        document.getElementById('reappointmentConditionDetails').value = personal.reappointmentConditionDetails || '';
+        document.getElementById('signature').value = personal.signature || '';
+        document.getElementById('declarationDate').value = personal.declarationDate || '';
 
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
@@ -1242,7 +1411,37 @@
               dob: formData.dob,
               email: formData.email,
               phone: formData.phone,
-              address: formData.address
+              address: formData.address,
+              passportNumber: formData.passportNumber,
+              race: formData.race,
+              gender: formData.gender,
+              workPermit: formData.workPermit,
+              preferredLanguage: formData.preferredLanguage,
+              communicationMethod: formData.communicationMethod,
+              yearsPrivateSector: formData.yearsPrivateSector,
+              yearsPublicSector: formData.yearsPublicSector,
+              registrationDate: formData.registrationDate,
+              registrationNumber: formData.registrationNumber,
+              currentStudy: formData.currentStudy,
+              languageDetails: formData.languageDetails,
+              criminalRecord: formData.additional.criminalRecord,
+              criminalRecordDetails: formData.additional.criminalRecordDetails,
+              pendingCriminalCase: formData.additional.pendingCriminalCase,
+              pendingCriminalCaseDetails: formData.additional.pendingCriminalCaseDetails,
+              dismissedMisconduct: formData.additional.dismissedMisconduct,
+              dismissedMisconductDetails: formData.additional.dismissedMisconductDetails,
+              pendingDisciplinaryCase: formData.additional.pendingDisciplinaryCase,
+              pendingDisciplinaryCaseDetails: formData.additional.pendingDisciplinaryCaseDetails,
+              resignedPendingDisciplinary: formData.additional.resignedPendingDisciplinary,
+              resignedPendingDisciplinaryDetails: formData.additional.resignedPendingDisciplinaryDetails,
+              dischargedIllHealth: formData.additional.dischargedIllHealth,
+              stateBusinessInterests: formData.additional.stateBusinessInterests,
+              stateBusinessInterestsDetails: formData.additional.stateBusinessInterestsDetails,
+              relinquishBusinessInterests: formData.additional.relinquishBusinessInterests,
+              publicServiceReappointmentCondition: formData.additional.publicServiceReappointmentCondition,
+              reappointmentConditionDetails: formData.additional.reappointmentConditionDetails,
+              signature: formData.signature,
+              declarationDate: formData.declarationDate
             },
             additional: {
               ...(currentProfile.profile?.additional || {}),
@@ -1396,10 +1595,16 @@
       }
 
       const liveInputs = [
-        'firstName', 'lastName', 'idNumber', 'dob', 'email', 'phone', 'address',
+        'firstName', 'lastName', 'idNumber', 'dob', 'passportNumber', 'email', 'phone', 'address',
         'citizenship', 'nationality', 'postalAddress', 'province', 'postalCode', 'country',
-        'disability', 'driverLicense', 'positionApplied', 'department', 'referenceNumber',
-        'employmentStatus', 'startDate', 'noticePeriod', 'salaryExpectation',
+        'disability', 'driverLicense', 'race', 'gender', 'workPermit', 'preferredLanguage', 'communicationMethod',
+        'yearsPrivateSector', 'yearsPublicSector', 'registrationDate', 'registrationNumber', 'currentStudy', 'languageDetails',
+        'signature', 'declarationDate',
+        'positionApplied', 'department', 'referenceNumber', 'employmentStatus', 'startDate', 'noticePeriod', 'salaryExpectation',
+        'criminalRecord', 'criminalRecordDetails', 'pendingCriminalCase', 'pendingCriminalCaseDetails', 'dismissedMisconduct',
+        'dismissedMisconductDetails', 'pendingDisciplinaryCase', 'pendingDisciplinaryCaseDetails', 'resignedPendingDisciplinary',
+        'resignedPendingDisciplinaryDetails', 'dischargedIllHealth', 'stateBusinessInterests', 'stateBusinessInterestsDetails',
+        'relinquishBusinessInterests', 'publicServiceReappointmentCondition', 'reappointmentConditionDetails',
         'refName1', 'refRole1', 'refPhone1', 'refEmail1',
         'refName2', 'refRole2', 'refPhone2', 'refEmail2'
       ];
