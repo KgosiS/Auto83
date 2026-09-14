@@ -14,7 +14,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const value = (entry) => entry === undefined || entry === null ? '' : String(entry);
   const firstName = profile.firstName || personal.firstName || '';
   const lastName = profile.lastName || personal.lastName || '';
-  const namesAtBottom = [firstName, personal.middleNames, personal.otherNames].filter(Boolean).join(' ').trim() || `${lastName} ${firstName}`.trim();
+  const namesAtBottom = [lastName, personal.middleNames, personal.otherNames].filter(Boolean).join(' ').trim() || `${lastName} ${firstName}`.trim();
   const fullName = `${firstName} ${lastName}`.trim();
   const email = profile.email || personal.email || '';
   const initials = value(personal.initials).trim().toUpperCase();
