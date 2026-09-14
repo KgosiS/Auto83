@@ -14,8 +14,10 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const value = (entry) => entry === undefined || entry === null ? '' : String(entry);
   const firstName = profile.firstName || personal.firstName || '';
   const lastName = profile.lastName || personal.lastName || '';
+  const namesAtTop = [firstName, personal.middleNames, personal.otherNames].filter(Boolean).join(' ').trim() || `${firstName} ${lastName}`.trim();
   const fullName = `${firstName} ${lastName}`.trim();
   const email = profile.email || personal.email || '';
+  const initials = value(personal.initials).trim().toUpperCase();
   const date = (entry) => {
     const parts = value(entry).split('-');
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
@@ -50,7 +52,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Department where the position was advertised', additional.department);
   setText('Reference number as stated in the advert', additional.referenceNumber);
   setText('If you are offered the position when can you start OR how much notice must you serve with your current employer', additional.startDate ? date(additional.startDate) : additional.noticePeriod);
-  setText('Surname and Full names', fullName);
+  setText('Surname and Full names', namesAtTop);
   setText('Surname and Full names_2', lastName);
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
@@ -117,16 +119,87 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   setText('Signature', personal.signature);
-  setText('Initials', personal.initials);
+  setText('Initials', initials);
 
-  const languages = [personal.language1, personal.language2, personal.language3, personal.language4, personal.language5];
-  languages.forEach((language, index) => setText(`Languages specifyRow1${index ? `_${index + 1}` : ''}`, language));
-  [personal.language1Speak, personal.language2Speak, personal.language3Speak, personal.language4Speak, personal.language5Speak]
-    .forEach((entry, index) => setDropdown(`Dropdown3.0.${index}`, entry));
-  [personal.language1Write, personal.language2Write, personal.language3Write, personal.language4Write, personal.language5Write]
-    .forEach((entry, index) => setDropdown(`Dropdown3.1.${index}`, entry));
+  const languageRows = [
+    { language: personal.language1, speak: personal.language1Speak, write: personal.language1Write },
+    { language: personal.language2, speak: personal.language2Speak, write: personal.language2Write },
+    { language: personal.language3, speak: personal.language3Speak, write: personal.language3Write },
+    { language: personal.language4, speak: personal.language4Speak, write: personal.language4Write },
+    { language: personal.language5, speak: personal.language5Speak, write: personal.language5Write }
+  ];
+
+  const parseLanguageDetails = (text) => {
+    const entries = value(text)
+      .split(/[\n;]+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    return entries.slice(0, 5).map((entry) => {
+      const normalized = entry.replace(/\s+/g, ' ').trim();
+      const tokens = normalized.split(/\s*[-–:]+\s*/).map((part) => part.trim()).filter(Boolean);
+
+      if (tokens.length >= 3) {
+        return {
+          language: tokens[0],
+          speak: tokens[1],
+          write: tokens[2]
+        };
+      }
+
+      const match = normalized.match(/^(.+?)\s+(good|fair|poor)(?:\s+(good|fair|poor))?$/i);
+      if (match) {
+        return {
+          language: match[1].trim(),
+          speak: match[2],
+          write: match[3] || ''
+        };
+      }
+
+      return { language: normalized, speak: '', write: '' };
+    });
+  };
+
+  const parsedLanguageDetails = parseLanguageDetails(personal.languageDetails || profile.languageDetails || '');
+  const mergedLanguageRows = [...languageRows].map((row, index) => {
+    const parsedRow = parsedLanguageDetails[index] || {};
+    return {
+      language: row.language || parsedRow.language || '',
+      speak: row.speak || parsedRow.speak || '',
+      write: row.write || parsedRow.write || ''
+    };
+  });
+
+  mergedLanguageRows.forEach((row, index) => {
+    const suffix = index === 0 ? '' : `_${index + 1}`;
+    const languageName = row.language;
+    if (languageName) setText(`Languages specifyRow1${suffix}`, languageName);
+    if (row.speak) setDropdown(`Dropdown3.0.${index}`, row.speak);
+    if (row.write) setDropdown(`Dropdown3.1.${index}`, row.write);
+  });
+
+  if (parsedLanguageDetails.length && !mergedLanguageRows.some((row) => row.language)) {
+    const fallback = parsedLanguageDetails[0];
+    setText('Languages specifyRow1', fallback.language);
+    if (fallback.speak) setDropdown('Dropdown3.0.0', fallback.speak);
+    if (fallback.write) setDropdown('Dropdown3.1.0', fallback.write);
+  }
 
   setChoice('Group16', personal.communicationMethod, [['Post', 'Choice1'], ['E-mail', 'Choice2'], ['Fax', 'Choice3'], ['Tel', 'Choice4']]);
+
+  if (initials) {
+    const pages = pdf.getPages();
+    pages.forEach((page) => {
+      const { width } = page.getSize();
+      page.drawText(`Initials: ${initials}`, {
+        x: width - 78,
+        y: 18,
+        size: 7,
+        color: window.PDFLib.rgb(0, 0, 0)
+      });
+    });
+  }
+
   form.updateFieldAppearances();
   return pdf.save({ updateFieldAppearances: true });
 };

@@ -666,6 +666,11 @@
             </div>
 
             <div class="field">
+              <label for="initials">Applicant initials</label>
+              <input id="initials" type="text" maxlength="4" placeholder="Enter your initials" />
+            </div>
+
+            <div class="field">
               <label for="yearsPrivateSector">Years of private-sector experience</label>
               <input id="yearsPrivateSector" type="number" min="0" step="1" />
             </div>
@@ -890,6 +895,7 @@
             workPermit: '',
             preferredLanguage: '',
             communicationMethod: '',
+            initials: '',
             yearsPrivateSector: '',
             yearsPublicSector: '',
             registrationDate: '',
@@ -1203,6 +1209,7 @@
         workPermit: document.getElementById('workPermit').value.trim(),
         preferredLanguage: document.getElementById('preferredLanguage').value.trim(),
         communicationMethod: document.getElementById('communicationMethod').value.trim(),
+        initials: document.getElementById('initials').value.trim().toUpperCase(),
         yearsPrivateSector: document.getElementById('yearsPrivateSector').value.trim(),
         yearsPublicSector: document.getElementById('yearsPublicSector').value.trim(),
         registrationDate: document.getElementById('registrationDate').value,
@@ -1335,6 +1342,7 @@
         document.getElementById('workPermit').value = personal.workPermit || '';
         document.getElementById('preferredLanguage').value = personal.preferredLanguage || '';
         document.getElementById('communicationMethod').value = personal.communicationMethod || '';
+        document.getElementById('initials').value = personal.initials || '';
         document.getElementById('yearsPrivateSector').value = personal.yearsPrivateSector || '';
         document.getElementById('yearsPublicSector').value = personal.yearsPublicSector || '';
         document.getElementById('registrationDate').value = personal.registrationDate || '';
@@ -1418,6 +1426,7 @@
               workPermit: formData.workPermit,
               preferredLanguage: formData.preferredLanguage,
               communicationMethod: formData.communicationMethod,
+              initials: formData.initials,
               yearsPrivateSector: formData.yearsPrivateSector,
               yearsPublicSector: formData.yearsPublicSector,
               registrationDate: formData.registrationDate,
