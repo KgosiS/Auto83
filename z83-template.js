@@ -14,7 +14,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const value = (entry) => entry === undefined || entry === null ? '' : String(entry);
   const firstName = profile.firstName || personal.firstName || '';
   const lastName = profile.lastName || personal.lastName || '';
-  const namesAtTop = [firstName, personal.middleNames, personal.otherNames].filter(Boolean).join(' ').trim() || `${firstName} ${lastName}`.trim();
+  const namesAtBottom = [firstName, personal.middleNames, personal.otherNames].filter(Boolean).join(' ').trim() || `${firstName} ${lastName}`.trim();
   const fullName = `${firstName} ${lastName}`.trim();
   const email = profile.email || personal.email || '';
   const initials = value(personal.initials).trim().toUpperCase();
@@ -52,8 +52,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Department where the position was advertised', additional.department);
   setText('Reference number as stated in the advert', additional.referenceNumber);
   setText('If you are offered the position when can you start OR how much notice must you serve with your current employer', additional.startDate ? date(additional.startDate) : additional.noticePeriod);
-  setText('Surname and Full names', namesAtTop);
-  setText('Surname and Full names_2', lastName);
+  setText('Surname and Full names', lastName);
+  setText('Surname and Full names_2', namesAtBottom);
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
   setText('Passport2 number', personal.passportNumber);
