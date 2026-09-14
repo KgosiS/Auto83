@@ -52,8 +52,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Department where the position was advertised', additional.department);
   setText('Reference number as stated in the advert', additional.referenceNumber);
   setText('If you are offered the position when can you start OR how much notice must you serve with your current employer', additional.startDate ? date(additional.startDate) : additional.noticePeriod);
-  setText('Surname and Full names', lastName);
-  setText('Surname and Full names_2', namesAtBottom);
+  setText('Surname and Full names', namesAtBottom);
+  setText('Surname and Full names_2',lastName );
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
   setText('Passport2 number', personal.passportNumber);
