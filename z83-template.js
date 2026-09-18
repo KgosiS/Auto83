@@ -62,7 +62,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : '');
   setTextIfPresent(['Reg. No.', 'Reg No'], personal.registrationNumber);
   setText('Preferred language for correspondence', personal.preferredLanguage);
-  setText('Contact details in terms of the above', `${personal.address || ''}${personal.phone ? ` | ${personal.phone}` : ''}${email ? ` | ${email}` : ''}`.trim());
+  setText('Contact details in terms of the above', `${personal.phone || ''}${email ? ` | ${email}` : ''}`.trim());
 
   setChoice('Group2', personal.race, [['African', 'Choice1'], ['White', 'Choice2'], ['Coloured', 'Choice3'], ['Indian', 'Choice4'], ['Other', 'Choice5']]);
   setChoice('Group3', personal.gender, [['Female', 'Choice7'], ['Male', 'Choice6']]);
@@ -120,12 +120,18 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Signature', personal.signature);
   setText('Initials', initials);
 
-  const languages = [personal.language1, personal.language2, personal.language3, personal.language4, personal.language5];
-  languages.forEach((language, index) => setText(`Languages specifyRow1${index ? `_${index + 1}` : ''}`, language));
-  [personal.language1Speak, personal.language2Speak, personal.language3Speak, personal.language4Speak, personal.language5Speak]
-    .forEach((entry, index) => setDropdown(`Dropdown3.0.${index}`, entry));
-  [personal.language1Write, personal.language2Write, personal.language3Write, personal.language4Write, personal.language5Write]
-    .forEach((entry, index) => setDropdown(`Dropdown3.1.${index}`, entry));
+  const languages = Array.isArray(personal.languages)
+    ? personal.languages
+    : [1, 2, 3, 4, 5].map((index) => ({
+      language: personal[`language${index}`],
+      speak: personal[`language${index}Speak`],
+      writeRead: personal[`language${index}Write`]
+    }));
+  languages.slice(0, 5).forEach((entry, index) => {
+    setText(`Languages specifyRow1${index ? `_${index + 1}` : ''}`, entry.language);
+    setDropdown(`Dropdown3.0.${index}`, entry.speak);
+    setDropdown(`Dropdown3.1.${index}`, entry.writeRead);
+  });
 
   setChoice('Group16', personal.communicationMethod, [['Post', 'Choice1'], ['E-mail', 'Choice2'], ['Fax', 'Choice3'], ['Tel', 'Choice4']]);
 

@@ -779,21 +779,14 @@
         const dob = personal.dob || 'Not provided';
         const email = profile?.email || personal.email || 'Not provided';
         const phone = personal.phone || 'Not provided';
-        const address = personal.address || 'Not provided';
         const citizenship = additional.citizenship || 'Not provided';
         const nationality = additional.nationality || 'Not provided';
-        const postalAddress = additional.postalAddress || 'Not provided';
-        const province = additional.province || 'Not provided';
-        const postalCode = additional.postalCode || 'Not provided';
         const disability = additional.disability || 'Not provided';
-        const driverLicense = additional.driverLicense || 'Not provided';
         const positionApplied = additional.positionApplied || 'Not provided';
         const department = additional.department || 'Not provided';
         const referenceNumber = additional.referenceNumber || 'Not provided';
-        const employmentStatus = additional.employmentStatus || 'Not provided';
         const startDate = additional.startDate || 'Not provided';
         const noticePeriod = additional.noticePeriod || 'Not provided';
-        const salaryExpectation = additional.salaryExpectation || 'Not provided';
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
 
@@ -840,7 +833,6 @@
                     <div class="field"><div class="label">Date of birth</div><div class="value">${dob}</div></div>
                     <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
                     <div class="field"><div class="label">Phone</div><div class="value">${phone}</div></div>
-                    <div class="field"><div class="label">Residential address</div><div class="value">${address}</div></div>
                   </div>
                 </div>
 
@@ -849,19 +841,12 @@
                   <div class="grid">
                     <div class="field"><div class="label">Citizenship</div><div class="value">${citizenship}</div></div>
                     <div class="field"><div class="label">Nationality</div><div class="value">${nationality}</div></div>
-                    <div class="field"><div class="label">Postal address</div><div class="value">${postalAddress}</div></div>
-                    <div class="field"><div class="label">Province</div><div class="value">${province}</div></div>
-                    <div class="field"><div class="label">Postal code</div><div class="value">${postalCode}</div></div>
-                    <div class="field"><div class="label">Country</div><div class="value">South Africa</div></div>
                     <div class="field"><div class="label">Disability</div><div class="value">${disability}</div></div>
-                    <div class="field"><div class="label">Driver's licence</div><div class="value">${driverLicense}</div></div>
                     <div class="field"><div class="label">Position applied for</div><div class="value">${positionApplied}</div></div>
                     <div class="field"><div class="label">Department / organisation</div><div class="value">${department}</div></div>
                     <div class="field"><div class="label">Reference number</div><div class="value">${referenceNumber}</div></div>
-                    <div class="field"><div class="label">Employment status</div><div class="value">${employmentStatus}</div></div>
                     <div class="field"><div class="label">Available to start</div><div class="value">${startDate}</div></div>
                     <div class="field"><div class="label">Notice period</div><div class="value">${noticePeriod}</div></div>
-                    <div class="field"><div class="label">Salary expectation</div><div class="value">${salaryExpectation}</div></div>
                   </div>
                 </div>
 
@@ -948,7 +933,6 @@
           !!(personal.lastName || lastName),
           !!(personal.email || profile?.email),
           !!personal.phone,
-          !!personal.address,
           !!(personal.idNumber || profile?.idNumber)
         ];
         const completedFields = personalFields.filter(Boolean).length +

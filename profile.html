@@ -302,6 +302,19 @@
       font-size: 0.82rem;
     }
 
+    .language-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+      align-items: end;
+    }
+
+    .language-heading {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
     input, select, textarea {
       width: 100%;
       border: 1px solid var(--line);
@@ -569,10 +582,6 @@
               <input id="phone" type="tel" placeholder="Enter your phone number" />
             </div>
 
-            <div class="field" style="grid-column: 1 / -1;">
-              <label for="address">Residential address</label>
-              <textarea id="address" placeholder="Enter your residential address"></textarea>
-            </div>
           </div>
         </section>
 
@@ -599,44 +608,11 @@
             </div>
 
             <div class="field">
-              <label for="postalAddress">Postal address</label>
-              <textarea id="postalAddress" placeholder="Enter postal address"></textarea>
-            </div>
-
-            <div class="field">
-              <label for="province">Province</label>
-              <input id="province" type="text" placeholder="Enter province" />
-            </div>
-
-            <div class="field">
-              <label for="postalCode">Postal code</label>
-              <input id="postalCode" type="text" placeholder="Enter postal code" />
-            </div>
-
-            <div class="field">
-              <label for="country">Country</label>
-              <input id="country" type="text" value="South Africa" placeholder="Enter country" />
-            </div>
-
-            <div class="field">
               <label for="disability">Disability</label>
               <select id="disability">
                 <option value="">Select</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="driverLicense">Driver's licence</label>
-              <select id="driverLicense">
-                <option value="">Select</option>
-                <option value="No">No</option>
-                <option value="Code 1">Code 1</option>
-                <option value="Code 2">Code 2</option>
-                <option value="Code 3">Code 3</option>
-                <option value="Code 4">Code 4</option>
-                <option value="Code 8">Code 8</option>
               </select>
             </div>
 
@@ -696,8 +672,47 @@
             </div>
 
             <div class="field" style="grid-column: 1 / -1;">
-              <label for="languageDetails">South African official language proficiency</label>
-              <textarea id="languageDetails" placeholder="List each language with speaking and writing/reading level"></textarea>
+              <label>South African official language proficiency</label>
+              <div class="language-grid">
+                <span class="language-heading">Language</span>
+                <span class="language-heading">Speak</span>
+                <span class="language-heading">Write or read</span>
+                <input id="language1" type="text" placeholder="Language 1" />
+                <select id="language1Speak">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <select id="language1WriteRead">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <input id="language2" type="text" placeholder="Language 2" />
+                <select id="language2Speak">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <select id="language2WriteRead">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <input id="language3" type="text" placeholder="Language 3" />
+                <select id="language3Speak">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <select id="language3WriteRead">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <input id="language4" type="text" placeholder="Language 4" />
+                <select id="language4Speak">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <select id="language4WriteRead">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <input id="language5" type="text" placeholder="Language 5" />
+                <select id="language5Speak">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+                <select id="language5WriteRead">
+                    <option value="">Select</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Poor">Poor</option>
+                </select>
+              </div>
             </div>
 
             <div class="field">
@@ -716,17 +731,6 @@
             </div>
 
             <div class="field">
-              <label for="employmentStatus">Employment status</label>
-              <select id="employmentStatus">
-                <option value="">Select</option>
-                <option value="Unemployed">Unemployed</option>
-                <option value="Employed">Employed</option>
-                <option value="Self-employed">Self-employed</option>
-                <option value="Student">Student</option>
-              </select>
-            </div>
-
-            <div class="field">
               <label for="startDate">Available to start</label>
               <input id="startDate" type="date" />
             </div>
@@ -734,11 +738,6 @@
             <div class="field">
               <label for="noticePeriod">Notice period</label>
               <input id="noticePeriod" type="text" placeholder="e.g. 1 month" />
-            </div>
-
-            <div class="field">
-              <label for="salaryExpectation">Salary expectation</label>
-              <input id="salaryExpectation" type="text" placeholder="e.g. R 250 000 / annum" />
             </div>
 
             <div class="field"><label for="criminalRecord">Convicted or found guilty of a criminal offence</label><select id="criminalRecord"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
@@ -888,7 +887,6 @@
             dob: '',
             email: '',
             phone: '',
-            address: '',
             passportNumber: '',
             race: '',
             gender: '',
@@ -901,7 +899,7 @@
             registrationDate: '',
             registrationNumber: '',
             currentStudy: '',
-            languageDetails: '',
+            languages: [],
             criminalRecord: '',
             criminalRecordDetails: '',
             pendingCriminalCase: '',
@@ -924,19 +922,12 @@
           additional: {
             citizenship: '',
             nationality: '',
-            postalAddress: '',
-            province: '',
-            postalCode: '',
-            country: 'South Africa',
             disability: '',
-            driverLicense: '',
             positionApplied: '',
             department: '',
             referenceNumber: '',
-            employmentStatus: '',
             startDate: '',
             noticePeriod: '',
-            salaryExpectation: ''
           },
           references: {
             ref1: {
@@ -1028,27 +1019,25 @@
         const dob = personal.dob || 'Not provided';
         const email = profile?.email || personal.email || 'Not provided';
         const phone = personal.phone || 'Not provided';
-        const address = personal.address || 'Not provided';
         const citizenship = additional.citizenship || 'Not provided';
         const nationality = additional.nationality || 'Not provided';
-        const postalAddress = additional.postalAddress || 'Not provided';
-        const province = additional.province || 'Not provided';
-        const postalCode = additional.postalCode || 'Not provided';
         const disability = additional.disability || 'Not provided';
-        const driverLicense = additional.driverLicense || 'Not provided';
         const positionApplied = additional.positionApplied || 'Not provided';
         const department = additional.department || 'Not provided';
         const referenceNumber = additional.referenceNumber || 'Not provided';
-        const employmentStatus = additional.employmentStatus || 'Not provided';
         const startDate = additional.startDate || 'Not provided';
         const noticePeriod = additional.noticePeriod || 'Not provided';
-        const salaryExpectation = additional.salaryExpectation || 'Not provided';
+        const languages = Array.isArray(personal.languages) ? personal.languages : [];
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
 
         const qualificationMarkup = education.length
           ? education.map((item) => `<li>${item.title || 'Qualification'} — ${item.institution || item.school || 'Institution'}${item.year ? ` (${item.year})` : ''}</li>`).join('')
           : '<li>No qualifications captured</li>';
+
+        const languageMarkup = languages.length
+          ? languages.map((item) => `<li>${item.language || 'Language'}: speak ${item.speak || 'Not provided'}, write/read ${item.writeRead || 'Not provided'}</li>`).join('')
+          : '<li>No languages captured</li>';
 
         const employmentMarkup = employment.length
           ? employment.map((item) => `<li>${item.title || 'Role'} — ${item.employer || item.company || 'Employer'}${item.period ? ` (${item.period})` : ''}</li>`).join('')
@@ -1089,7 +1078,6 @@
                     <div class="field"><div class="label">Date of birth</div><div class="value">${dob}</div></div>
                     <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
                     <div class="field"><div class="label">Phone</div><div class="value">${phone}</div></div>
-                    <div class="field"><div class="label">Residential address</div><div class="value">${address}</div></div>
                   </div>
                 </div>
 
@@ -1098,20 +1086,18 @@
                   <div class="grid">
                     <div class="field"><div class="label">Citizenship</div><div class="value">${citizenship}</div></div>
                     <div class="field"><div class="label">Nationality</div><div class="value">${nationality}</div></div>
-                    <div class="field"><div class="label">Postal address</div><div class="value">${postalAddress}</div></div>
-                    <div class="field"><div class="label">Province</div><div class="value">${province}</div></div>
-                    <div class="field"><div class="label">Postal code</div><div class="value">${postalCode}</div></div>
-                    <div class="field"><div class="label">Country</div><div class="value">South Africa</div></div>
                     <div class="field"><div class="label">Disability</div><div class="value">${disability}</div></div>
-                    <div class="field"><div class="label">Driver's licence</div><div class="value">${driverLicense}</div></div>
                     <div class="field"><div class="label">Position applied for</div><div class="value">${positionApplied}</div></div>
                     <div class="field"><div class="label">Department / organisation</div><div class="value">${department}</div></div>
                     <div class="field"><div class="label">Reference number</div><div class="value">${referenceNumber}</div></div>
-                    <div class="field"><div class="label">Employment status</div><div class="value">${employmentStatus}</div></div>
                     <div class="field"><div class="label">Available to start</div><div class="value">${startDate}</div></div>
                     <div class="field"><div class="label">Notice period</div><div class="value">${noticePeriod}</div></div>
-                    <div class="field"><div class="label">Salary expectation</div><div class="value">${salaryExpectation}</div></div>
                   </div>
+                </div>
+
+                <div class="section">
+                  <h2>South African official language proficiency</h2>
+                  <ul>${languageMarkup}</ul>
                 </div>
 
                 <div class="section">
@@ -1202,7 +1188,6 @@
         dob: document.getElementById('dob').value,
         email: document.getElementById('email').value.trim(),
         phone: document.getElementById('phone').value.trim(),
-        address: document.getElementById('address').value.trim(),
         passportNumber: document.getElementById('passportNumber').value.trim(),
         race: document.getElementById('race').value.trim(),
         gender: document.getElementById('gender').value.trim(),
@@ -1215,25 +1200,22 @@
         registrationDate: document.getElementById('registrationDate').value,
         registrationNumber: document.getElementById('registrationNumber').value.trim(),
         currentStudy: document.getElementById('currentStudy').value.trim(),
-        languageDetails: document.getElementById('languageDetails').value.trim(),
+        languages: Array.from({ length: 5 }, (_, index) => ({
+          language: document.getElementById(`language${index + 1}`).value.trim(),
+          speak: document.getElementById(`language${index + 1}Speak`).value,
+          writeRead: document.getElementById(`language${index + 1}WriteRead`).value
+        })).filter((entry) => entry.language),
         signature: document.getElementById('signature').value.trim(),
         declarationDate: document.getElementById('declarationDate').value,
         additional: {
           citizenship: document.getElementById('citizenship').value.trim(),
           nationality: document.getElementById('nationality').value.trim(),
-          postalAddress: document.getElementById('postalAddress').value.trim(),
-          province: document.getElementById('province').value.trim(),
-          postalCode: document.getElementById('postalCode').value.trim(),
-          country: document.getElementById('country').value.trim() || 'South Africa',
           disability: document.getElementById('disability').value.trim(),
-          driverLicense: document.getElementById('driverLicense').value.trim(),
           positionApplied: document.getElementById('positionApplied').value.trim(),
           department: document.getElementById('department').value.trim(),
           referenceNumber: document.getElementById('referenceNumber').value.trim(),
-          employmentStatus: document.getElementById('employmentStatus').value.trim(),
           startDate: document.getElementById('startDate').value,
           noticePeriod: document.getElementById('noticePeriod').value.trim(),
-          salaryExpectation: document.getElementById('salaryExpectation').value.trim(),
           criminalRecord: document.getElementById('criminalRecord').value.trim(),
           criminalRecordDetails: document.getElementById('criminalRecordDetails').value.trim(),
           pendingCriminalCase: document.getElementById('pendingCriminalCase').value.trim(),
@@ -1335,7 +1317,6 @@
         document.getElementById('dob').value = personal.dob || '';
         document.getElementById('email').value = data.email || personal.email || '';
         document.getElementById('phone').value = personal.phone || '';
-        document.getElementById('address').value = personal.address || '';
         document.getElementById('passportNumber').value = personal.passportNumber || '';
         document.getElementById('race').value = personal.race || '';
         document.getElementById('gender').value = personal.gender || '';
@@ -1348,22 +1329,21 @@
         document.getElementById('registrationDate').value = personal.registrationDate || '';
         document.getElementById('registrationNumber').value = personal.registrationNumber || '';
         document.getElementById('currentStudy').value = personal.currentStudy || '';
-        document.getElementById('languageDetails').value = personal.languageDetails || '';
+        const languages = Array.isArray(personal.languages) ? personal.languages : [];
+        Array.from({ length: 5 }, (_, index) => {
+          const entry = languages[index] || {};
+          document.getElementById(`language${index + 1}`).value = entry.language || '';
+          document.getElementById(`language${index + 1}Speak`).value = entry.speak || '';
+          document.getElementById(`language${index + 1}WriteRead`).value = entry.writeRead || '';
+        });
         document.getElementById('citizenship').value = additional.citizenship || '';
         document.getElementById('nationality').value = additional.nationality || '';
-        document.getElementById('postalAddress').value = additional.postalAddress || '';
-        document.getElementById('province').value = additional.province || '';
-        document.getElementById('postalCode').value = additional.postalCode || '';
-        document.getElementById('country').value = additional.country || 'South Africa';
         document.getElementById('disability').value = additional.disability || '';
-        document.getElementById('driverLicense').value = additional.driverLicense || '';
         document.getElementById('positionApplied').value = additional.positionApplied || '';
         document.getElementById('department').value = additional.department || '';
         document.getElementById('referenceNumber').value = additional.referenceNumber || '';
-        document.getElementById('employmentStatus').value = additional.employmentStatus || '';
         document.getElementById('startDate').value = additional.startDate || '';
         document.getElementById('noticePeriod').value = additional.noticePeriod || '';
-        document.getElementById('salaryExpectation').value = additional.salaryExpectation || '';
         document.getElementById('criminalRecord').value = personal.criminalRecord || '';
         document.getElementById('criminalRecordDetails').value = personal.criminalRecordDetails || '';
         document.getElementById('pendingCriminalCase').value = personal.pendingCriminalCase || '';
@@ -1419,7 +1399,6 @@
               dob: formData.dob,
               email: formData.email,
               phone: formData.phone,
-              address: formData.address,
               passportNumber: formData.passportNumber,
               race: formData.race,
               gender: formData.gender,
@@ -1432,7 +1411,7 @@
               registrationDate: formData.registrationDate,
               registrationNumber: formData.registrationNumber,
               currentStudy: formData.currentStudy,
-              languageDetails: formData.languageDetails,
+              languages: formData.languages,
               criminalRecord: formData.additional.criminalRecord,
               criminalRecordDetails: formData.additional.criminalRecordDetails,
               pendingCriminalCase: formData.additional.pendingCriminalCase,
@@ -1604,12 +1583,11 @@
       }
 
       const liveInputs = [
-        'firstName', 'lastName', 'idNumber', 'dob', 'passportNumber', 'email', 'phone', 'address',
-        'citizenship', 'nationality', 'postalAddress', 'province', 'postalCode', 'country',
-        'disability', 'driverLicense', 'race', 'gender', 'workPermit', 'preferredLanguage', 'communicationMethod',
-        'yearsPrivateSector', 'yearsPublicSector', 'registrationDate', 'registrationNumber', 'currentStudy', 'languageDetails',
+        'firstName', 'lastName', 'idNumber', 'dob', 'passportNumber', 'email', 'phone',
+        'citizenship', 'nationality', 'disability', 'race', 'gender', 'workPermit', 'preferredLanguage', 'communicationMethod',
+        'yearsPrivateSector', 'yearsPublicSector', 'registrationDate', 'registrationNumber', 'currentStudy',
         'signature', 'declarationDate',
-        'positionApplied', 'department', 'referenceNumber', 'employmentStatus', 'startDate', 'noticePeriod', 'salaryExpectation',
+        'positionApplied', 'department', 'referenceNumber', 'startDate', 'noticePeriod',
         'criminalRecord', 'criminalRecordDetails', 'pendingCriminalCase', 'pendingCriminalCaseDetails', 'dismissedMisconduct',
         'dismissedMisconductDetails', 'pendingDisciplinaryCase', 'pendingDisciplinaryCaseDetails', 'resignedPendingDisciplinary',
         'resignedPendingDisciplinaryDetails', 'dischargedIllHealth', 'stateBusinessInterests', 'stateBusinessInterestsDetails',
@@ -1617,6 +1595,12 @@
         'refName1', 'refRole1', 'refPhone1', 'refEmail1',
         'refName2', 'refRole2', 'refPhone2', 'refEmail2'
       ];
+
+      liveInputs.push(...Array.from({ length: 5 }, (_, index) => [
+        `language${index + 1}`,
+        `language${index + 1}Speak`,
+        `language${index + 1}WriteRead`
+      ]).flat());
 
       liveInputs.forEach((id) => {
         const field = document.getElementById(id);
