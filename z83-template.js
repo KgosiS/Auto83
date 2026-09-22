@@ -11,14 +11,15 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const references = profile.profile?.references || {};
   const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
   const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
-  const value = (entry) => entry === undefined || entry === null ? '' : String(entry);
+  const value = (entry, fallback = 'N/A') => entry === undefined || entry === null || String(entry).trim() === '' ? fallback : String(entry);
+  const rawValue = (entry) => entry === undefined || entry === null ? '' : String(entry);
   const firstName = profile.firstName || personal.firstName || '';
   const lastName = profile.lastName || personal.lastName || '';
   const fullName = `${lastName} ${firstName}`.trim();
   const email = profile.email || personal.email || '';
   const initials = value(personal.initials).trim().toUpperCase();
   const date = (entry) => {
-    const parts = value(entry).split('-');
+    const parts = rawValue(entry).split('-');
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
   };
   const setText = (name, entry) => form.getTextField(name).setText(value(entry));
@@ -55,14 +56,14 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Surname and Full names_2', firstName);
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
-  setText('Passport2 number', personal.passportNumber);
-  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.nationality);
+  setText('Passport2 number', additional.citizenship === 'South African' ? 'N/A' : personal.passportNumber);
+  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.citizenship === 'South African' ? 'N/A' : additional.nationality);
   setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector);
   setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector);
-  setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : '');
-  setTextIfPresent(['Reg. No.', 'Reg No'], personal.registrationNumber);
+  setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : 'N/A');
+  setTextIfPresent(['Reg. No.', 'Reg No'], personal.registrationNumber || 'N/A');
   setText('Preferred language for correspondence', personal.preferredLanguage);
-  setText('Contact details in terms of the above', `${personal.phone || ''}${email ? ` | ${email}` : ''}`.trim());
+  setText('Contact details in terms of the above', `${personal.phone || ''}${email ? ` | ${email}` : ''}`.trim() || 'N/A');
 
   setChoice('Group2', personal.race, [['African', 'Choice1'], ['White', 'Choice2'], ['Coloured', 'Choice3'], ['Indian', 'Choice4'], ['Other', 'Choice5']]);
   setChoice('Group3', personal.gender, [['Female', 'Choice7'], ['Male', 'Choice6']]);
@@ -77,15 +78,15 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
-  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecordDetails);
-  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCaseDetails);
-  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconductDetails);
-  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCaseDetails);
-  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinaryDetails);
-  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterestsDetails);
+  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecord === 'No' ? 'N/A' : personal.criminalRecordDetails);
+  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCase === 'No' ? 'N/A' : personal.pendingCriminalCaseDetails);
+  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconduct === 'No' ? 'N/A' : personal.dismissedMisconductDetails);
+  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCase === 'No' ? 'N/A' : personal.pendingDisciplinaryCaseDetails);
+  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinary === 'No' ? 'N/A' : personal.resignedPendingDisciplinaryDetails);
+  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterests === 'No' ? 'N/A' : personal.stateBusinessInterestsDetails);
 
   [1, 2, 3, 4].forEach((row, index) => {
-    const item = education[index] || {};
+    const item = education[index] || { institution: 'N/A', title: 'N/A', year: 'N/A' };
     setText(`Name of SchoolTechnical CollegeRow${row}`, item.institution || item.school);
     setText(`Name of qualification obtainedRow${row}`, item.title);
     setText(`Year obtainedRow${row}`, item.year);
@@ -93,7 +94,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Current study institution and qualification', personal.currentStudy);
 
   [1, 2, 3].forEach((row, index) => {
-    const item = employment[index] || {};
+    const item = employment[index] || { employer: 'N/A', title: 'N/A', period: 'N/A', reason: 'N/A' };
     const dates = value(item.period).split(/\s*(?:-|to)\s*/i);
     const fromParts = dates[0].split(/[\s/.-]+/).filter(Boolean);
     const toParts = (dates[1] || '').split(/[\s/.-]+/).filter(Boolean);
@@ -105,7 +106,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
     setText(`YYRow${row}_2`, toParts[1]);
     setText(`Reason for leavingRow${row}`, item.reason);
   });
-  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.reappointmentConditionDetails);
+  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.publicServiceReappointmentCondition === 'No' ? 'N/A' : personal.reappointmentConditionDetails);
   setRadio('Group17', personal.publicServiceReappointmentCondition, 'Choice1', 'Choice2');
 
   [references.ref1, references.ref2].forEach((reference, index) => {
@@ -117,7 +118,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
   });
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
-  setText('Signature', personal.signature);
+  const signatureData = rawValue(personal.signatureData);
+  setText('Signature', signatureData ? 'N/A' : personal.signature);
   setText('Initials', initials);
 
   const languages = Array.isArray(personal.languages)
@@ -135,17 +137,23 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setChoice('Group16', personal.communicationMethod, [['Post', 'Choice1'], ['E-mail', 'Choice2'], ['Fax', 'Choice3'], ['Tel', 'Choice4']]);
 
-  if (initials) {
-    const pages = pdf.getPages();
-    pages.forEach((page) => {
-      const { width } = page.getSize();
-      page.drawText(`Initials: ${initials}`, {
-        x: width - 78,
-        y: 18,
-        size: 7,
-        color: window.PDFLib.rgb(0, 0, 0)
+  if (signatureData) {
+    try {
+      const signatureBytes = Uint8Array.from(atob(signatureData.split(',')[1]), (character) => character.charCodeAt(0));
+      const signatureImage = await pdf.embedPng(signatureBytes);
+      const signatureField = form.getTextField('Signature');
+      const widget = signatureField.acroField.getWidgets()[0];
+      const rectangle = widget.getRectangle();
+      const page = pdf.getPages()[1];
+      page.drawImage(signatureImage, {
+        x: rectangle.x + 4,
+        y: rectangle.y + 3,
+        width: Math.max(rectangle.width - 8, 20),
+        height: Math.max(rectangle.height - 6, 20)
       });
-    });
+    } catch (error) {
+      setText('Signature', personal.signature || 'N/A');
+    }
   }
 
   form.updateFieldAppearances();

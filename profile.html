@@ -336,6 +336,23 @@
       resize: vertical;
     }
 
+    .signature-pad {
+      width: 100%;
+      height: 150px;
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
     .card-list {
       display: flex;
       flex-direction: column;
@@ -756,7 +773,13 @@
             <div class="field"><label for="relinquishBusinessInterests">Will you relinquish these interests if appointed?</label><select id="relinquishBusinessInterests"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
             <div class="field"><label for="publicServiceReappointmentCondition">Condition preventing Public Service reappointment</label><select id="publicServiceReappointmentCondition"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
             <div class="field" style="grid-column: 1 / -1;"><label for="reappointmentConditionDetails">Previous department and condition details</label><textarea id="reappointmentConditionDetails" placeholder="Provide details if applicable"></textarea></div>
-            <div class="field"><label for="signature">Declaration signature</label><input id="signature" type="text" placeholder="Enter your full name as signature" /></div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="signature-pad">Declaration signature</label>
+              <canvas id="signature-pad" class="signature-pad" aria-label="Draw your signature"></canvas>
+              <div class="signature-actions">
+                <button id="clear-signature" class="mini-btn" type="button">Clear signature</button>
+              </div>
+            </div>
             <div class="field"><label for="declarationDate">Declaration date</label><input id="declarationDate" type="date" /></div>
           </div>
         </section>
@@ -871,6 +894,75 @@
       const employmentListEl = document.getElementById('employment-list');
       const educationCountEl = document.getElementById('education-count');
       const employmentCountEl = document.getElementById('employment-count');
+      const signaturePad = document.getElementById('signature-pad');
+      const clearSignatureBtn = document.getElementById('clear-signature');
+      const signatureContext = signaturePad ? signaturePad.getContext('2d') : null;
+      let signatureIsDrawing = false;
+
+      const resizeSignaturePad = () => {
+        if (!signaturePad || !signatureContext) return;
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        const rect = signaturePad.getBoundingClientRect();
+        const existing = signaturePad.dataset.value || '';
+        signaturePad.width = rect.width * ratio;
+        signaturePad.height = rect.height * ratio;
+        signatureContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+        signatureContext.lineWidth = 2;
+        signatureContext.lineCap = 'round';
+        signatureContext.lineJoin = 'round';
+        signatureContext.strokeStyle = '#111';
+        if (existing) {
+          const image = new Image();
+          image.onload = () => signatureContext.drawImage(image, 0, 0, rect.width, rect.height);
+          image.src = existing;
+        }
+      };
+
+      const signaturePoint = (event) => {
+        const rect = signaturePad.getBoundingClientRect();
+        return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      };
+
+      const saveSignatureData = () => {
+        if (!signaturePad) return;
+        signaturePad.dataset.value = signaturePad.toDataURL('image/png');
+        persistProfile(false);
+      };
+
+      const clearSignature = () => {
+        if (!signaturePad || !signatureContext) return;
+        signatureContext.clearRect(0, 0, signaturePad.width, signaturePad.height);
+        signaturePad.dataset.value = '';
+        persistProfile(false);
+      };
+
+      if (signaturePad && signatureContext) {
+        resizeSignaturePad();
+        window.addEventListener('resize', resizeSignaturePad);
+        signaturePad.addEventListener('pointerdown', (event) => {
+          signatureIsDrawing = true;
+          signaturePad.setPointerCapture(event.pointerId);
+          const point = signaturePoint(event);
+          signatureContext.beginPath();
+          signatureContext.moveTo(point.x, point.y);
+        });
+        signaturePad.addEventListener('pointermove', (event) => {
+          if (!signatureIsDrawing) return;
+          const point = signaturePoint(event);
+          signatureContext.lineTo(point.x, point.y);
+          signatureContext.stroke();
+        });
+        signaturePad.addEventListener('pointerup', () => {
+          if (!signatureIsDrawing) return;
+          signatureIsDrawing = false;
+          saveSignatureData();
+        });
+        signaturePad.addEventListener('pointercancel', () => {
+          signatureIsDrawing = false;
+        });
+      }
+
+      clearSignatureBtn?.addEventListener('click', clearSignature);
 
       const defaultProfile = {
         firstName: '',
@@ -917,6 +1009,7 @@
             publicServiceReappointmentCondition: '',
             reappointmentConditionDetails: '',
             signature: '',
+            signatureData: '',
             declarationDate: ''
           },
           additional: {
@@ -1205,7 +1298,8 @@
           speak: document.getElementById(`language${index + 1}Speak`).value,
           writeRead: document.getElementById(`language${index + 1}WriteRead`).value
         })).filter((entry) => entry.language),
-        signature: document.getElementById('signature').value.trim(),
+        signature: '',
+        signatureData: signaturePad?.dataset.value || '',
         declarationDate: document.getElementById('declarationDate').value,
         additional: {
           citizenship: document.getElementById('citizenship').value.trim(),
@@ -1360,7 +1454,10 @@
         document.getElementById('relinquishBusinessInterests').value = personal.relinquishBusinessInterests || '';
         document.getElementById('publicServiceReappointmentCondition').value = personal.publicServiceReappointmentCondition || '';
         document.getElementById('reappointmentConditionDetails').value = personal.reappointmentConditionDetails || '';
-        document.getElementById('signature').value = personal.signature || '';
+        if (signaturePad) {
+          signaturePad.dataset.value = personal.signatureData || '';
+          resizeSignaturePad();
+        }
         document.getElementById('declarationDate').value = personal.declarationDate || '';
 
         const ref1 = references.ref1 || {};
@@ -1429,6 +1526,7 @@
               publicServiceReappointmentCondition: formData.additional.publicServiceReappointmentCondition,
               reappointmentConditionDetails: formData.additional.reappointmentConditionDetails,
               signature: formData.signature,
+              signatureData: formData.signatureData,
               declarationDate: formData.declarationDate
             },
             additional: {
