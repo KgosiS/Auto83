@@ -22,11 +22,11 @@ window.createOfficialZ83Document = async (profile = {}) => {
     const parts = rawValue(entry).split('-');
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
   };
-  const setText = (name, entry) => form.getTextField(name).setText(value(entry));
+  const setText = (name, entry) => form.getTextField(name).setText(value(entry, ''));
   const setTextIfPresent = (names, entry) => {
     for (const name of names) {
       try {
-        form.getTextField(name).setText(value(entry));
+        form.getTextField(name).setText(value(entry, ''));
         return;
       } catch (error) {
       }
@@ -48,13 +48,6 @@ window.createOfficialZ83Document = async (profile = {}) => {
     if (selected) form.getRadioGroup(name).select(selected[1]);
   };
 
-  const fillEmptyTextFields = () => {
-    form.getFields().forEach((field) => {
-      if (typeof field.getText !== 'function' || field.getName() === 'Initials' || field.getName() === 'Signature') return;
-      if (!field.getText().trim()) field.setText('N/A');
-    });
-  };
-
   setText('Position for which you are applying as advertised', additional.positionApplied);
   setText('Department where the position was advertised', additional.department);
   setText('Reference number as stated in the advert', additional.referenceNumber);
@@ -63,10 +56,10 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Surname and Full names_2', firstName);
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
-  setText('Passport2 number', additional.citizenship === 'South African' ? 'N/A' : personal.passportNumber);
-  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.citizenship === 'South African' ? 'N/A' : additional.nationality);
-  setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector);
-  setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector);
+  setText('Passport2 number', additional.citizenship === 'South African' ? 'N/A' : personal.passportNumber || 'N/A');
+  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.citizenship === 'South African' || !additional.nationality ? 'N/A' : additional.nationality);
+  setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector || 'N/A');
+  setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector || 'N/A');
   setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : 'N/A');
   setTextIfPresent(['Reg. No.', 'Reg No'], personal.registrationNumber || 'N/A');
   setText('Preferred language for correspondence', personal.preferredLanguage);
@@ -85,15 +78,15 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
-  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecord === 'No' ? 'N/A' : personal.criminalRecordDetails);
-  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCase === 'No' ? 'N/A' : personal.pendingCriminalCaseDetails);
-  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconduct === 'No' ? 'N/A' : personal.dismissedMisconductDetails);
-  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCase === 'No' ? 'N/A' : personal.pendingDisciplinaryCaseDetails);
-  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinary === 'No' ? 'N/A' : personal.resignedPendingDisciplinaryDetails);
-  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterests === 'No' ? 'N/A' : personal.stateBusinessInterestsDetails);
+  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecord === 'Yes' ? personal.criminalRecordDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCase === 'Yes' ? personal.pendingCriminalCaseDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconduct === 'Yes' ? personal.dismissedMisconductDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCase === 'Yes' ? personal.pendingDisciplinaryCaseDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinary === 'Yes' ? personal.resignedPendingDisciplinaryDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterests === 'Yes' ? personal.stateBusinessInterestsDetails || 'N/A' : 'N/A');
 
   [1, 2, 3, 4].forEach((row, index) => {
-    const item = education[index] || { institution: 'N/A', title: 'N/A', year: 'N/A' };
+    const item = education[index] || {};
     setText(`Name of SchoolTechnical CollegeRow${row}`, item.institution || item.school);
     setText(`Name of qualification obtainedRow${row}`, item.title);
     setText(`Year obtainedRow${row}`, item.year);
@@ -101,7 +94,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Current study institution and qualification', personal.currentStudy);
 
   [1, 2, 3].forEach((row, index) => {
-    const item = employment[index] || { employer: 'N/A', title: 'N/A', period: 'N/A', reason: 'N/A' };
+    const item = employment[index] || {};
     const dates = value(item.period).split(/\s*(?:-|to)\s*/i);
     const fromParts = dates[0].split(/[\s/.-]+/).filter(Boolean);
     const toParts = (dates[1] || '').split(/[\s/.-]+/).filter(Boolean);
@@ -113,7 +106,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
     setText(`YYRow${row}_2`, toParts[1]);
     setText(`Reason for leavingRow${row}`, item.reason);
   });
-  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.publicServiceReappointmentCondition === 'No' ? 'N/A' : personal.reappointmentConditionDetails);
+  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.publicServiceReappointmentCondition === 'Yes' ? personal.reappointmentConditionDetails || 'N/A' : 'N/A');
   setRadio('Group17', personal.publicServiceReappointmentCondition, 'Choice1', 'Choice2');
 
   [references.ref1, references.ref2].forEach((reference, index) => {
@@ -162,8 +155,6 @@ window.createOfficialZ83Document = async (profile = {}) => {
       setText('Signature', personal.signature || 'N/A');
     }
   }
-
-  fillEmptyTextFields();
 
   form.updateFieldAppearances();
   return pdf.save({ updateFieldAppearances: true });
