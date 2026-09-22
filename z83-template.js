@@ -17,7 +17,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const lastName = profile.lastName || personal.lastName || '';
   const fullName = `${lastName} ${firstName}`.trim();
   const email = profile.email || personal.email || '';
-  const initials = rawValue(personal.initials).trim().toUpperCase();
+  const initials = rawValue(personal.initials).trim().toUpperCase()
+    || `${rawValue(firstName).trim().charAt(0)}${rawValue(lastName).trim().charAt(0)}`.toUpperCase();
   const date = (entry) => {
     const parts = rawValue(entry).split('-');
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
@@ -120,7 +121,10 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
   setText('Signature', signatureData ? 'N/A' : personal.signature);
-  if (initials) setText('Initials', initials);
+  try {
+    form.getTextField('Initials').setText('');
+  } catch (error) {
+  }
 
   const languages = Array.isArray(personal.languages)
     ? personal.languages
@@ -154,6 +158,18 @@ window.createOfficialZ83Document = async (profile = {}) => {
     } catch (error) {
       setText('Signature', personal.signature || 'N/A');
     }
+  }
+
+  if (initials) {
+    pdf.getPages().forEach((page) => {
+      const { width } = page.getSize();
+      page.drawText(initials, {
+        x: width - 47,
+        y: 20,
+        size: 9,
+        color: window.PDFLib.rgb(0, 0, 0)
+      });
+    });
   }
 
   form.updateFieldAppearances();
