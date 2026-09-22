@@ -17,7 +17,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   const lastName = profile.lastName || personal.lastName || '';
   const fullName = `${lastName} ${firstName}`.trim();
   const email = profile.email || personal.email || '';
-  const initials = value(personal.initials).trim().toUpperCase();
+  const initials = rawValue(personal.initials).trim().toUpperCase();
   const date = (entry) => {
     const parts = rawValue(entry).split('-');
     return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : value(entry);
@@ -46,6 +46,13 @@ window.createOfficialZ83Document = async (profile = {}) => {
     const normalized = value(entry).toLowerCase();
     const selected = choices.find(([label]) => normalized === label.toLowerCase());
     if (selected) form.getRadioGroup(name).select(selected[1]);
+  };
+
+  const fillEmptyTextFields = () => {
+    form.getFields().forEach((field) => {
+      if (typeof field.getText !== 'function' || field.getName() === 'Initials' || field.getName() === 'Signature') return;
+      if (!field.getText().trim()) field.setText('N/A');
+    });
   };
 
   setText('Position for which you are applying as advertised', additional.positionApplied);
@@ -120,7 +127,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
   setText('Signature', signatureData ? 'N/A' : personal.signature);
-  setText('Initials', initials);
+  if (initials) setText('Initials', initials);
 
   const languages = Array.isArray(personal.languages)
     ? personal.languages
@@ -155,6 +162,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
       setText('Signature', personal.signature || 'N/A');
     }
   }
+
+  fillEmptyTextFields();
 
   form.updateFieldAppearances();
   return pdf.save({ updateFieldAppearances: true });
