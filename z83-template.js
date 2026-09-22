@@ -32,6 +32,16 @@ window.createOfficialZ83Document = async (profile = {}) => {
       } catch (error) {
       }
     }
+
+    const normalizeFieldName = (name) => String(name).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const fieldNames = names.map(normalizeFieldName);
+    const matchingField = form.getFields().find((field) => {
+      if (typeof field.getText !== 'function') return false;
+      const normalizedName = normalizeFieldName(field.getName());
+      return fieldNames.some((fieldName) => normalizedName.includes(fieldName) || fieldName.includes(normalizedName));
+    });
+
+    if (matchingField) matchingField.setText(value(entry, ''));
   };
   const setDropdown = (name, entry) => {
     const field = form.getDropdown(name);
