@@ -58,7 +58,11 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
   setText('Passport2 number', additional.citizenship === 'South African' ? 'N/A' : personal.passportNumber || 'N/A');
-  setTextIfPresent(['If no what is your nationality', 'Nationality'], additional.citizenship === 'South African' || !additional.nationality ? 'N/A' : additional.nationality);
+  setTextIfPresent([
+    'If no what is your nationality',
+    'If no, what is your nationality?',
+    'Nationality'
+  ], additional.citizenship === 'South African' || !additional.nationality ? 'N/A' : additional.nationality);
   setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector || 'N/A');
   setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector || 'N/A');
   setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : 'N/A');
@@ -79,9 +83,9 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
-  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)'], personal.criminalRecord === 'Yes' ? personal.criminalRecordDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2'], personal.pendingCriminalCase === 'Yes' ? personal.pendingCriminalCaseDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3'], personal.dismissedMisconduct === 'Yes' ? personal.dismissedMisconductDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)', 'If yes (provide the details)?'], personal.criminalRecord === 'Yes' ? personal.criminalRecordDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2', 'If yes, (provide the details)5'], personal.pendingCriminalCase === 'Yes' ? personal.pendingCriminalCaseDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3', 'If yes (provide the details)6'], personal.dismissedMisconduct === 'Yes' ? personal.dismissedMisconductDetails || 'N/A' : 'N/A');
   setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCase === 'Yes' ? personal.pendingDisciplinaryCaseDetails || 'N/A' : 'N/A');
   setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinary === 'Yes' ? personal.resignedPendingDisciplinaryDetails || 'N/A' : 'N/A');
   setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterests === 'Yes' ? personal.stateBusinessInterestsDetails || 'N/A' : 'N/A');
