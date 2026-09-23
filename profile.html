@@ -903,7 +903,18 @@
       const signatureContext = signaturePad ? signaturePad.getContext('2d') : null;
       let signatureIsDrawing = false;
 
-      const getFirebaseUser = () => typeof auth !== 'undefined' ? auth.currentUser : null;
+      const firebaseAuth = window.firebase?.auth ? firebase.auth() : null;
+      const firestore = window.firebase?.firestore ? firebase.firestore() : null;
+      const authReady = firebaseAuth
+        ? new Promise((resolve) => {
+            const unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
+              unsubscribe();
+              resolve(user);
+            });
+          })
+        : Promise.resolve(null);
+
+      const getFirebaseUser = () => firebaseAuth?.currentUser || null;
 
       const resizeSignaturePad = () => {
         if (!signaturePad || !signatureContext) return;
@@ -1097,10 +1108,12 @@
       };
 
       const saveProfileToFirestore = async (profile) => {
-        const user = getFirebaseUser();
-        if (!user || typeof db === 'undefined') return;
+        const user = getFirebaseUser() || await authReady;
+        if (!user || !firestore) {
+          throw new Error('No signed-in Firebase user is available.');
+        }
 
-        await db.collection('users').doc(user.uid).set({
+        await firestore.collection('users').doc(user.uid).set({
           ...profile,
           uid: user.uid,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1108,10 +1121,10 @@
       };
 
       const loadProfileFromFirestore = async () => {
-        const user = getFirebaseUser();
-        if (!user || typeof db === 'undefined') return;
+        const user = getFirebaseUser() || await authReady;
+        if (!user || !firestore) return;
 
-        const snapshot = await db.collection('users').doc(user.uid).get();
+        const snapshot = await firestore.collection('users').doc(user.uid).get();
         if (!snapshot.exists) return;
 
         const cloudProfile = normalizeProfile(snapshot.data());
@@ -1511,7 +1524,7 @@
         });
       };
 
-      const persistProfile = (isDraft = false) => {
+      const persistProfile = async (isDraft = false) => {
         const formData = getFormData();
         const currentProfile = getStoredProfile();
         const payload = {
@@ -1573,10 +1586,7 @@
         };
 
         const savedPayload = saveStoredProfile(payload);
-        saveProfileToFirestore(savedPayload).catch((error) => {
-          console.error('Unable to save profile to Firestore:', error);
-          setStatusText('Cloud save failed');
-        });
+        await saveProfileToFirestore(savedPayload);
         updateIdentity(payload);
         updateCounts(payload);
         renderEducationList();
@@ -1699,8 +1709,8 @@
         renderEducationList();
         renderEmploymentList();
 
-        if (typeof auth !== 'undefined') {
-          auth.onAuthStateChanged((user) => {
+        if (firebaseAuth) {
+          firebaseAuth.onAuthStateChanged((user) => {
             if (user) {
               loadProfileFromFirestore().catch((error) => console.error('Unable to load profile from Firestore:', error));
             }
@@ -1715,16 +1725,28 @@
 
       if (saveProfileBtn) {
         saveProfileBtn.dataset.originalText = saveProfileBtn.textContent;
-        saveProfileBtn.addEventListener('click', () => {
-          persistProfile(false);
+        saveProfileBtn.addEventListener('click', async () => {
+          try {
+            await persistProfile(false);
+          } catch (error) {
+            console.error('Unable to save profile to Firestore:', error);
+            setStatusText(error.message || 'Cloud save failed');
+            return;
+          }
           setStatusText('Saved');
         });
       }
 
       if (saveDraftBtn) {
         saveDraftBtn.dataset.originalText = saveDraftBtn.textContent;
-        saveDraftBtn.addEventListener('click', () => {
-          persistProfile(true);
+        saveDraftBtn.addEventListener('click', async () => {
+          try {
+            await persistProfile(true);
+          } catch (error) {
+            console.error('Unable to save draft to Firestore:', error);
+            setStatusText(error.message || 'Cloud save failed');
+            return;
+          }
           setStatusText('Draft saved');
         });
       }
@@ -1754,7 +1776,9 @@
         if (!field) return;
 
         field.addEventListener('input', () => {
-          persistProfile(false);
+          persistProfile(false).catch((error) => {
+            console.error('Unable to sync profile to Firestore:', error);
+          });
         });
       });
 
