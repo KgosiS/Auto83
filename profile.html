@@ -883,6 +883,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="z83-template.js?v=3"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const saveProfileBtn = document.getElementById('save-profile');
@@ -898,6 +902,8 @@
       const clearSignatureBtn = document.getElementById('clear-signature');
       const signatureContext = signaturePad ? signaturePad.getContext('2d') : null;
       let signatureIsDrawing = false;
+
+      const getFirebaseUser = () => typeof auth !== 'undefined' ? auth.currentUser : null;
 
       const resizeSignaturePad = () => {
         if (!signaturePad || !signatureContext) return;
@@ -1087,6 +1093,33 @@
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         window.dispatchEvent(new CustomEvent('auto83-profile-updated', { detail: payload }));
+        return payload;
+      };
+
+      const saveProfileToFirestore = async (profile) => {
+        const user = getFirebaseUser();
+        if (!user || typeof db === 'undefined') return;
+
+        await db.collection('users').doc(user.uid).set({
+          ...profile,
+          uid: user.uid,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      };
+
+      const loadProfileFromFirestore = async () => {
+        const user = getFirebaseUser();
+        if (!user || typeof db === 'undefined') return;
+
+        const snapshot = await db.collection('users').doc(user.uid).get();
+        if (!snapshot.exists) return;
+
+        const cloudProfile = normalizeProfile(snapshot.data());
+        saveStoredProfile(cloudProfile);
+        fillFormData(cloudProfile);
+        updateIdentity(cloudProfile);
+        renderEducationList();
+        renderEmploymentList();
       };
 
       const setStatusText = (text) => {
@@ -1539,7 +1572,11 @@
           }
         };
 
-        saveStoredProfile(payload);
+        const savedPayload = saveStoredProfile(payload);
+        saveProfileToFirestore(savedPayload).catch((error) => {
+          console.error('Unable to save profile to Firestore:', error);
+          setStatusText('Cloud save failed');
+        });
         updateIdentity(payload);
         updateCounts(payload);
         renderEducationList();
@@ -1576,7 +1613,8 @@
 
         const updatedProfile = getStoredProfile();
         updatedProfile.profile.education = education;
-        saveStoredProfile(updatedProfile);
+        const savedProfile = saveStoredProfile(updatedProfile);
+        saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to save qualification:', error));
         renderEducationList();
       };
 
@@ -1601,7 +1639,8 @@
 
         const updatedProfile = getStoredProfile();
         updatedProfile.profile.employment = employment;
-        saveStoredProfile(updatedProfile);
+        const savedProfile = saveStoredProfile(updatedProfile);
+        saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to save employment:', error));
         renderEmploymentList();
       };
 
@@ -1624,7 +1663,8 @@
         });
 
         profile.profile.education = education;
-        saveStoredProfile(profile);
+        const savedProfile = saveStoredProfile(profile);
+        saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to save qualification:', error));
         renderEducationList();
       };
 
@@ -1647,7 +1687,8 @@
         });
 
         profile.profile.employment = employment;
-        saveStoredProfile(profile);
+        const savedProfile = saveStoredProfile(profile);
+        saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to save employment:', error));
         renderEmploymentList();
       };
 
@@ -1657,6 +1698,14 @@
         updateIdentity(userProfile);
         renderEducationList();
         renderEmploymentList();
+
+        if (typeof auth !== 'undefined') {
+          auth.onAuthStateChanged((user) => {
+            if (user) {
+              loadProfileFromFirestore().catch((error) => console.error('Unable to load profile from Firestore:', error));
+            }
+          });
+        }
       };
 
       const generateZ83Btn = document.getElementById('generate-z83-profile');
@@ -1722,7 +1771,8 @@
           const education = Array.isArray(profile.profile?.education) ? profile.profile.education : [];
           education.splice(Number(index), 1);
           profile.profile.education = education;
-          saveStoredProfile(profile);
+          const savedProfile = saveStoredProfile(profile);
+          saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to remove qualification:', error));
           renderEducationList();
           return;
         }
@@ -1732,7 +1782,8 @@
           const employment = Array.isArray(profile.profile?.employment) ? profile.profile.employment : [];
           employment.splice(Number(index), 1);
           profile.profile.employment = employment;
-          saveStoredProfile(profile);
+          const savedProfile = saveStoredProfile(profile);
+          saveProfileToFirestore(savedProfile).catch((error) => console.error('Unable to remove employment:', error));
           renderEmploymentList();
           return;
         }
