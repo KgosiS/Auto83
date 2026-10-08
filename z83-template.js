@@ -166,7 +166,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
         height: Math.max(rectangle.height - 6, 20)
       });
     } catch (error) {
-      setText('Signature', personal.signature || 'N/A');
+      setText('Signature', personal.signature);
     }
   }
 
