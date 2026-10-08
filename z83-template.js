@@ -93,12 +93,12 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
-  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)', 'If yes (provide the details)?'], personal.criminalRecord === 'Yes' ? personal.criminalRecordDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2', 'If yes, (provide the details)5'], personal.pendingCriminalCase === 'Yes' ? personal.pendingCriminalCaseDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3', 'If yes (provide the details)6'], personal.dismissedMisconduct === 'Yes' ? personal.dismissedMisconductDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCase === 'Yes' ? personal.pendingDisciplinaryCaseDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinary === 'Yes' ? personal.resignedPendingDisciplinaryDetails || 'N/A' : 'N/A');
-  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterests === 'Yes' ? personal.stateBusinessInterestsDetails || 'N/A' : 'N/A');
+  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)', 'If yes (provide the details)?'], personal.criminalRecordDetails || 'N/A');
+  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2', 'If yes, (provide the details)5'], personal.pendingCriminalCaseDetails || 'N/A');
+  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3', 'If yes (provide the details)6'], personal.dismissedMisconductDetails || 'N/A');
+  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCaseDetails || 'N/A');
+  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinaryDetails || 'N/A');
+  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterestsDetails || 'N/A');
 
   [1, 2, 3, 4].forEach((row, index) => {
     const item = education[index] || {};
@@ -121,7 +121,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
     setText(`YYRow${row}_2`, toParts[1]);
     setText(`Reason for leavingRow${row}`, item.reason);
   });
-  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.publicServiceReappointmentCondition === 'Yes' ? personal.reappointmentConditionDetails || 'N/A' : 'N/A');
+  setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.reappointmentConditionDetails || 'N/A');
   setRadio('Group17', personal.publicServiceReappointmentCondition, 'Choice1', 'Choice2');
 
   [references.ref1, references.ref2].forEach((reference, index) => {
