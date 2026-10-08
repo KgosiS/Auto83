@@ -68,11 +68,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('DDMMYY', date(personal.dob));
   setText('Identity Number', profile.idNumber || personal.idNumber);
   setText('Passport2 number', additional.citizenship === 'South African' ? 'N/A' : personal.passportNumber || 'N/A');
-  setTextIfPresent([
-    'If no what is your nationality',
-    'If no, what is your nationality?',
-    'Nationality'
-  ], additional.citizenship === 'South African' || !additional.nationality ? 'N/A' : additional.nationality);
+  setText('Text5', additional.citizenship === 'South African' || !additional.nationality ? 'N/A' : additional.nationality);
   setTextIfPresent(['Private Sector', 'Private Sector years'], personal.yearsPrivateSector || 'N/A');
   setTextIfPresent(['Public Sector', 'Public Sector years'], personal.yearsPublicSector || 'N/A');
   setTextIfPresent(['Date Reg.', 'Date Reg'], personal.registrationDate ? date(personal.registrationDate) : 'N/A');
@@ -93,12 +89,12 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setRadio('Group12', personal.dischargedIllHealth);
   setRadio('Group13', personal.stateBusinessInterests);
   setRadio('Group14', personal.relinquishBusinessInterests);
-  setTextIfPresent(['If yes provide the details', 'If yes (provide the details)', 'If yes (provide the details)?'], personal.criminalRecordDetails || 'N/A');
-  setTextIfPresent(['If yes (provide the details)2', 'If yes provide the details2', 'If yes, (provide the details)5'], personal.pendingCriminalCaseDetails || 'N/A');
-  setTextIfPresent(['If yes (provide the details)3', 'If yes provide the details3', 'If yes (provide the details)6'], personal.dismissedMisconductDetails || 'N/A');
-  setTextIfPresent(['If yes (provide the details)4', 'If yes provide the details4'], personal.pendingDisciplinaryCaseDetails || 'N/A');
-  setTextIfPresent(['If yes (provide the details)5', 'If yes provide the details5'], personal.resignedPendingDisciplinaryDetails || 'N/A');
-  setTextIfPresent(['If yes (provide the details)6', 'If yes provide the details6'], personal.stateBusinessInterestsDetails || 'N/A');
+  setText('Text6', personal.criminalRecordDetails);
+  setText('Text7', personal.pendingCriminalCaseDetails);
+  setText('Text8', personal.dismissedMisconductDetails);
+  setText('Text9', personal.pendingDisciplinaryCaseDetails);
+  setText('Text10', personal.resignedPendingDisciplinaryDetails);
+  setText('Text11', personal.stateBusinessInterestsDetails);
 
   [1, 2, 3, 4].forEach((row, index) => {
     const item = education[index] || {};
