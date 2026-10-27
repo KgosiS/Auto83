@@ -136,6 +136,14 @@ Before generating a Z83, applicants enter the role, department and reference num
 
 Using the saved profile, Auto83 will automatically populate every supported section of the official Z83 form and produce a printable PDF.
 
+## Z83 preparation guides and South African headlines
+
+The public landing page includes original checklists and guidance on reading a vacancy advert, organising qualifications and work history, checking referee details, and reviewing a generated form. The guidance is general; each recruiting department's advert and the official form instructions take precedence.
+
+The RSA news section reads public article metadata from the GDELT DOC API, displays publisher-attributed headlines, links readers to the original source, and caches results in the browser. The news feed is optional and does not receive profile details. Headline availability depends on the external service and its rate limits.
+
+See [privacy.html](./privacy.html) and [terms.html](./terms.html) for the site's current privacy notice and terms of use. Adding useful content or legal pages does not guarantee approval by Google AdSense; the site must also meet Google's current publisher and consent requirements.
+
 ---
 
 # Technology Stack
