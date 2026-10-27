@@ -890,6 +890,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="z83-template.js?v=3"></script>
+  <script src="vacancy-details.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -1283,7 +1284,18 @@
         }
 
         try {
-          await persistProfile(false, { syncCloud: false, updateUi: false });
+          const currentAdditional = getStoredProfile().profile?.additional || {};
+          const vacancyDetails = await window.requestVacancyDetails(currentAdditional);
+          if (!vacancyDetails) {
+            z83Window.close();
+            return;
+          }
+
+          document.getElementById('positionApplied').value = vacancyDetails.positionApplied;
+          document.getElementById('department').value = vacancyDetails.department;
+          document.getElementById('referenceNumber').value = vacancyDetails.referenceNumber;
+          const signedInUser = getFirebaseUser() || await authReady;
+          await persistProfile(false, { syncCloud: !!signedInUser, updateUi: false });
           const profile = getStoredProfile();
           const pdfBytes = await window.createOfficialZ83Document(profile || {});
           const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
