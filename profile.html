@@ -847,15 +847,15 @@
               <div class="grid-2">
                 <div class="field">
                   <label for="refName1">Name</label>
-                  <input id="refName1" type="text" placeholder="Enter reference name" />
+                  <input id="refName1" type="text" placeholder="Enter reference name" required />
                 </div>
                 <div class="field">
                   <label for="refRole1">Role</label>
-                  <input id="refRole1" type="text" placeholder="Enter reference role" />
+                  <input id="refRole1" type="text" placeholder="Enter reference role" required />
                 </div>
                 <div class="field">
                   <label for="refPhone1">Phone</label>
-                  <input id="refPhone1" type="tel" placeholder="Enter phone number" />
+                  <input id="refPhone1" type="tel" placeholder="Enter phone number" required />
                 </div>
                 <div class="field">
                   <label for="refEmail1">Email</label>
@@ -869,15 +869,15 @@
               <div class="grid-2">
                 <div class="field">
                   <label for="refName2">Name</label>
-                  <input id="refName2" type="text" placeholder="Enter reference name" />
+                  <input id="refName2" type="text" placeholder="Enter reference name" required />
                 </div>
                 <div class="field">
                   <label for="refRole2">Role</label>
-                  <input id="refRole2" type="text" placeholder="Enter reference role" />
+                  <input id="refRole2" type="text" placeholder="Enter reference role" required />
                 </div>
                 <div class="field">
                   <label for="refPhone2">Phone</label>
-                  <input id="refPhone2" type="tel" placeholder="Enter phone number" />
+                  <input id="refPhone2" type="tel" placeholder="Enter phone number" required />
                 </div>
                 <div class="field">
                   <label for="refEmail2">Email</label>
@@ -891,15 +891,15 @@
               <div class="grid-2">
                 <div class="field">
                   <label for="refName3">Name</label>
-                  <input id="refName3" type="text" placeholder="Enter reference name" />
+                  <input id="refName3" type="text" placeholder="Enter reference name" required />
                 </div>
                 <div class="field">
                   <label for="refRole3">Role</label>
-                  <input id="refRole3" type="text" placeholder="Enter reference role" />
+                  <input id="refRole3" type="text" placeholder="Enter reference role" required />
                 </div>
                 <div class="field">
                   <label for="refPhone3">Phone</label>
-                  <input id="refPhone3" type="tel" placeholder="Enter phone number" />
+                  <input id="refPhone3" type="tel" placeholder="Enter phone number" required />
                 </div>
                 <div class="field">
                   <label for="refEmail3">Email</label>
@@ -933,7 +933,7 @@
   </nav>
 
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script src="z83-template.js?v=3"></script>
+  <script src="z83-template.js?v=4"></script>
   <script src="vacancy-details.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1332,6 +1332,8 @@
 
       const generateZ83 = async () => {
         let z83Window;
+        if (!validateReferences()) return;
+
         try {
           const currentAdditional = getStoredProfile().profile?.additional || {};
           const result = await window.requestVacancyDetails(currentAdditional);
@@ -1462,6 +1464,26 @@
           }
         }
       });
+
+      const validateReferences = () => {
+        const requiredReferenceFields = Array.from({ length: 3 }, (_, index) => {
+          const number = index + 1;
+          return [
+            document.getElementById(`refName${number}`),
+            document.getElementById(`refRole${number}`),
+            document.getElementById(`refPhone${number}`)
+          ];
+        }).flat();
+
+        const missingField = requiredReferenceFields.find((field) => !field.value.trim());
+        if (!missingField) return true;
+
+        missingField.setCustomValidity('Please provide a name, role and phone number for all three references.');
+        missingField.reportValidity();
+        missingField.addEventListener('input', () => missingField.setCustomValidity(''), { once: true });
+        missingField.focus();
+        return false;
+      };
 
       const renderEducationList = () => {
         const profile = getStoredProfile();
@@ -1806,6 +1828,8 @@
       if (saveProfileBtn) {
         saveProfileBtn.dataset.originalText = saveProfileBtn.textContent;
         saveProfileBtn.addEventListener('click', async () => {
+          if (!validateReferences()) return;
+
           try {
             await persistProfile(false);
           } catch (error) {

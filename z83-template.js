@@ -130,7 +130,8 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
-  setText('Signature', personal.signature);
+  const signatureText = rawValue(personal.signature).trim().startsWith('data:image/') ? '' : personal.signature;
+  setText('Signature', signatureText);
   try {
     form.getTextField('Initials').setText('');
   } catch (error) {
@@ -166,7 +167,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
         height: Math.max(rectangle.height - 6, 20)
       });
     } catch (error) {
-      setText('Signature', personal.signature);
+      setText('Signature', signatureText);
     }
   }
 
