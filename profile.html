@@ -820,7 +820,7 @@
         <section class="panel" id="references">
           <div class="panel-header">
             <h2>Professional references</h2>
-            <span class="chip">2 contacts</span>
+            <span class="chip">3 contacts</span>
           </div>
 
           <div class="grid-2">
@@ -862,6 +862,26 @@
             <div class="field">
               <label for="refEmail2">Reference 2 email</label>
               <input id="refEmail2" type="email" placeholder="Enter email address" />
+            </div>
+
+            <div class="field">
+              <label for="refName3">Reference 3 name</label>
+              <input id="refName3" type="text" placeholder="Enter reference name" />
+            </div>
+
+            <div class="field">
+              <label for="refRole3">Reference 3 role</label>
+              <input id="refRole3" type="text" placeholder="Enter reference role" />
+            </div>
+
+            <div class="field">
+              <label for="refPhone3">Reference 3 phone</label>
+              <input id="refPhone3" type="tel" placeholder="Enter phone number" />
+            </div>
+
+            <div class="field">
+              <label for="refEmail3">Reference 3 email</label>
+              <input id="refEmail3" type="email" placeholder="Enter email address" />
             </div>
           </div>
         </section>
@@ -1059,6 +1079,12 @@
               role: '',
               phone: '',
               email: ''
+            },
+            ref3: {
+              name: '',
+              role: '',
+              phone: '',
+              email: ''
             }
           },
           education: [],
@@ -1177,6 +1203,7 @@
         const languages = Array.isArray(personal.languages) ? personal.languages : [];
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
+        const ref3 = references.ref3 || {};
 
         const qualificationMarkup = education.length
           ? education.map((item) => `<li>${item.title || 'Qualification'} — ${item.institution || item.school || 'Institution'}${item.year ? ` (${item.year})` : ''}</li>`).join('')
@@ -1268,6 +1295,10 @@
                     <div class="field"><div class="label">Reference 2 role</div><div class="value">${ref2.role || 'Not provided'}</div></div>
                     <div class="field"><div class="label">Reference 2 phone</div><div class="value">${ref2.phone || 'Not provided'}</div></div>
                     <div class="field"><div class="label">Reference 2 email</div><div class="value">${ref2.email || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 name</div><div class="value">${ref3.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 role</div><div class="value">${ref3.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 phone</div><div class="value">${ref3.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 email</div><div class="value">${ref3.email || 'Not provided'}</div></div>
                   </div>
                 </div>
               </div>
@@ -1398,6 +1429,12 @@
             role: document.getElementById('refRole2').value.trim(),
             phone: document.getElementById('refPhone2').value.trim(),
             email: document.getElementById('refEmail2').value.trim()
+          },
+          ref3: {
+            name: document.getElementById('refName3').value.trim(),
+            role: document.getElementById('refRole3').value.trim(),
+            phone: document.getElementById('refPhone3').value.trim(),
+            email: document.getElementById('refEmail3').value.trim()
           }
         }
       });
@@ -1521,6 +1558,7 @@
 
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
+        const ref3 = references.ref3 || {};
         document.getElementById('refName1').value = ref1.name || '';
         document.getElementById('refRole1').value = ref1.role || '';
         document.getElementById('refPhone1').value = ref1.phone || '';
@@ -1529,6 +1567,10 @@
         document.getElementById('refRole2').value = ref2.role || '';
         document.getElementById('refPhone2').value = ref2.phone || '';
         document.getElementById('refEmail2').value = ref2.email || '';
+        document.getElementById('refName3').value = ref3.name || '';
+        document.getElementById('refRole3').value = ref3.role || '';
+        document.getElementById('refPhone3').value = ref3.phone || '';
+        document.getElementById('refEmail3').value = ref3.email || '';
 
         updateIdentity({
           firstName: document.getElementById('firstName').value,
@@ -1776,7 +1818,8 @@
         'resignedPendingDisciplinaryDetails', 'dischargedIllHealth', 'stateBusinessInterests', 'stateBusinessInterestsDetails',
         'relinquishBusinessInterests', 'publicServiceReappointmentCondition', 'reappointmentConditionDetails',
         'refName1', 'refRole1', 'refPhone1', 'refEmail1',
-        'refName2', 'refRole2', 'refPhone2', 'refEmail2'
+        'refName2', 'refRole2', 'refPhone2', 'refEmail2',
+        'refName3', 'refRole3', 'refPhone3', 'refEmail3'
       ];
 
       liveInputs.push(...Array.from({ length: 5 }, (_, index) => [

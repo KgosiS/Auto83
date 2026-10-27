@@ -120,7 +120,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
   setText('If yes Provide the name of the previous employing department and indicate the nature of the condition', personal.reappointmentConditionDetails || 'N/A');
   setRadio('Group17', personal.publicServiceReappointmentCondition, 'Choice1', 'Choice2');
 
-  [references.ref1, references.ref2].forEach((reference, index) => {
+  [references.ref1, references.ref2, references.ref3].forEach((reference, index) => {
     const row = index + 1;
     const item = reference || {};
     setText(`NameRow${row}`, item.name);
@@ -130,7 +130,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
-  setText('Signature', signatureData );
+  setText('Signature', personal.signature);
   try {
     form.getTextField('Initials').setText('');
   } catch (error) {

@@ -816,6 +816,7 @@
         const noticePeriod = additional.noticePeriod || 'Not provided';
         const ref1 = references.ref1 || {};
         const ref2 = references.ref2 || {};
+        const ref3 = references.ref3 || {};
 
         const qualificationMarkup = education.length
           ? education.map((item) => `<li>${item.title || 'Qualification'} — ${item.institution || item.school || 'Institution'}${item.year ? ` (${item.year})` : ''}</li>`).join('')
@@ -898,6 +899,10 @@
                     <div class="field"><div class="label">Reference 2 role</div><div class="value">${ref2.role || 'Not provided'}</div></div>
                     <div class="field"><div class="label">Reference 2 phone</div><div class="value">${ref2.phone || 'Not provided'}</div></div>
                     <div class="field"><div class="label">Reference 2 email</div><div class="value">${ref2.email || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 name</div><div class="value">${ref3.name || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 role</div><div class="value">${ref3.role || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 phone</div><div class="value">${ref3.phone || 'Not provided'}</div></div>
+                    <div class="field"><div class="label">Reference 3 email</div><div class="value">${ref3.email || 'Not provided'}</div></div>
                   </div>
                 </div>
               </div>
@@ -961,7 +966,7 @@
         const education = Array.isArray(profile?.profile?.education) ? profile.profile.education : [];
         const employment = Array.isArray(profile?.profile?.employment) ? profile.profile.employment : [];
         const references = profile?.profile?.references || {};
-        const referenceCount = [references.ref1, references.ref2]
+        const referenceCount = [references.ref1, references.ref2, references.ref3]
           .filter((reference) => reference?.name).length;
 
         const personalFields = [
