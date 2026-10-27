@@ -291,6 +291,23 @@
       gap: 16px;
     }
 
+    .reference-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .reference-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .reference-card h3 {
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+
     .field {
       display: flex;
       flex-direction: column;
@@ -822,67 +839,74 @@
             <h2>Professional references</h2>
             <span class="chip">3 contacts</span>
           </div>
+          <p class="field-note">Add at least three references. All three are saved with your profile and included in your Z83.</p>
 
-          <div class="grid-2">
-            <div class="field">
-              <label for="refName1">Reference 1 name</label>
-              <input id="refName1" type="text" placeholder="Enter reference name" />
-            </div>
+          <div class="reference-list">
+            <section class="reference-card" aria-labelledby="reference-one-heading">
+              <h3 id="reference-one-heading">Reference 1</h3>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="refName1">Name</label>
+                  <input id="refName1" type="text" placeholder="Enter reference name" />
+                </div>
+                <div class="field">
+                  <label for="refRole1">Role</label>
+                  <input id="refRole1" type="text" placeholder="Enter reference role" />
+                </div>
+                <div class="field">
+                  <label for="refPhone1">Phone</label>
+                  <input id="refPhone1" type="tel" placeholder="Enter phone number" />
+                </div>
+                <div class="field">
+                  <label for="refEmail1">Email</label>
+                  <input id="refEmail1" type="email" placeholder="Enter email address" />
+                </div>
+              </div>
+            </section>
 
-            <div class="field">
-              <label for="refRole1">Reference 1 role</label>
-              <input id="refRole1" type="text" placeholder="Enter reference role" />
-            </div>
+            <section class="reference-card" aria-labelledby="reference-two-heading">
+              <h3 id="reference-two-heading">Reference 2</h3>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="refName2">Name</label>
+                  <input id="refName2" type="text" placeholder="Enter reference name" />
+                </div>
+                <div class="field">
+                  <label for="refRole2">Role</label>
+                  <input id="refRole2" type="text" placeholder="Enter reference role" />
+                </div>
+                <div class="field">
+                  <label for="refPhone2">Phone</label>
+                  <input id="refPhone2" type="tel" placeholder="Enter phone number" />
+                </div>
+                <div class="field">
+                  <label for="refEmail2">Email</label>
+                  <input id="refEmail2" type="email" placeholder="Enter email address" />
+                </div>
+              </div>
+            </section>
 
-            <div class="field">
-              <label for="refPhone1">Reference 1 phone</label>
-              <input id="refPhone1" type="tel" placeholder="Enter phone number" />
-            </div>
-
-            <div class="field">
-              <label for="refEmail1">Reference 1 email</label>
-              <input id="refEmail1" type="email" placeholder="Enter email address" />
-            </div>
-
-            <div class="field">
-              <label for="refName2">Reference 2 name</label>
-              <input id="refName2" type="text" placeholder="Enter reference name" />
-            </div>
-
-            <div class="field">
-              <label for="refRole2">Reference 2 role</label>
-              <input id="refRole2" type="text" placeholder="Enter reference role" />
-            </div>
-
-            <div class="field">
-              <label for="refPhone2">Reference 2 phone</label>
-              <input id="refPhone2" type="tel" placeholder="Enter phone number" />
-            </div>
-
-            <div class="field">
-              <label for="refEmail2">Reference 2 email</label>
-              <input id="refEmail2" type="email" placeholder="Enter email address" />
-            </div>
-
-            <div class="field">
-              <label for="refName3">Reference 3 name</label>
-              <input id="refName3" type="text" placeholder="Enter reference name" />
-            </div>
-
-            <div class="field">
-              <label for="refRole3">Reference 3 role</label>
-              <input id="refRole3" type="text" placeholder="Enter reference role" />
-            </div>
-
-            <div class="field">
-              <label for="refPhone3">Reference 3 phone</label>
-              <input id="refPhone3" type="tel" placeholder="Enter phone number" />
-            </div>
-
-            <div class="field">
-              <label for="refEmail3">Reference 3 email</label>
-              <input id="refEmail3" type="email" placeholder="Enter email address" />
-            </div>
+            <section class="reference-card" aria-labelledby="reference-three-heading">
+              <h3 id="reference-three-heading">Reference 3</h3>
+              <div class="grid-2">
+                <div class="field">
+                  <label for="refName3">Name</label>
+                  <input id="refName3" type="text" placeholder="Enter reference name" />
+                </div>
+                <div class="field">
+                  <label for="refRole3">Role</label>
+                  <input id="refRole3" type="text" placeholder="Enter reference role" />
+                </div>
+                <div class="field">
+                  <label for="refPhone3">Phone</label>
+                  <input id="refPhone3" type="tel" placeholder="Enter phone number" />
+                </div>
+                <div class="field">
+                  <label for="refEmail3">Email</label>
+                  <input id="refEmail3" type="email" placeholder="Enter email address" />
+                </div>
+              </div>
+            </section>
           </div>
         </section>
       </div>
