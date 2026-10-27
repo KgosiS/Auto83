@@ -130,8 +130,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
-  const signatureText = rawValue(personal.signature).trim().startsWith('data:image/') ? '' : personal.signature;
-  setText('Signature', signatureText);
+  setText('Signature', '');
   try {
     form.getTextField('Initials').setText('');
   } catch (error) {
@@ -167,7 +166,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
         height: Math.max(rectangle.height - 6, 20)
       });
     } catch (error) {
-      setText('Signature', signatureText);
+      console.error('Unable to add the saved signature image to the Z83:', error);
     }
   }
 

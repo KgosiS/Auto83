@@ -933,7 +933,7 @@
   </nav>
 
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script src="z83-template.js?v=4"></script>
+  <script src="z83-template.js?v=5"></script>
   <script src="vacancy-details.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -957,6 +957,15 @@
 
       const firebaseAuth = window.firebase?.auth ? firebase.auth() : null;
       const firestore = window.firebase?.firestore ? firebase.firestore() : null;
+      const firestorePersistenceReady = firestore
+        ? firestore.enablePersistence({ synchronizeTabs: true }).catch((error) => {
+            if (['failed-precondition', 'unimplemented'].includes(error.code)) {
+              console.warn('Firestore local profile cache is unavailable in this browser:', error);
+              return;
+            }
+            console.error('Unable to enable the Firestore local profile cache:', error);
+          })
+        : Promise.resolve();
       const authReady = firebaseAuth
         ? new Promise((resolve) => {
             const unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
@@ -1182,15 +1191,30 @@
         const user = getFirebaseUser() || await authReady;
         if (!user || !firestore) return;
 
-        const snapshot = await firestore.collection('users').doc(user.uid).get();
-        if (!snapshot.exists) return;
+        await firestorePersistenceReady;
+        const profileDocument = firestore.collection('users').doc(user.uid);
+        const applyProfileSnapshot = (snapshot) => {
+          if (!snapshot.exists) return;
 
-        const cloudProfile = normalizeProfile(snapshot.data());
-        saveStoredProfile(cloudProfile);
-        fillFormData(cloudProfile);
-        updateIdentity(cloudProfile);
-        renderEducationList();
-        renderEmploymentList();
+          const cloudProfile = normalizeProfile(snapshot.data());
+          saveStoredProfile(cloudProfile);
+          fillFormData(cloudProfile);
+          updateIdentity(cloudProfile);
+          renderEducationList();
+          renderEmploymentList();
+        };
+
+        try {
+          const cachedSnapshot = await profileDocument.get({ source: 'cache' });
+          applyProfileSnapshot(cachedSnapshot);
+        } catch (error) {
+          if (error.code !== 'unavailable') {
+            console.warn('Unable to load the cached profile; loading from Firestore:', error);
+          }
+        }
+
+        const serverSnapshot = await profileDocument.get({ source: 'server' });
+        applyProfileSnapshot(serverSnapshot);
       };
 
       const setStatusText = (text) => {
