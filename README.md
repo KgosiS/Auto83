@@ -132,7 +132,7 @@ Store professional references including:
 
 ## Automatic Z83 Generation
 
-Before generating a Z83, applicants can upload a PDF or image of the vacancy circular to extract the role, department and reference number, or enter those details manually. Extracted values can be reviewed and edited before they are saved to the profile and added to the generated form. Circular text extraction runs in the browser; the file itself is not uploaded or saved.
+Before generating a Z83, applicants enter the role, department and reference number from the vacancy circular. These details are saved to the profile and added to the generated form.
 
 Using the saved profile, Auto83 will automatically populate every supported section of the official Z83 form and produce a printable PDF.
 

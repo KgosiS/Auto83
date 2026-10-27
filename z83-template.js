@@ -130,7 +130,7 @@ window.createOfficialZ83Document = async (profile = {}) => {
 
   setText('Date', date(personal.declarationDate || new Date().toISOString().slice(0, 10)));
   const signatureData = rawValue(personal.signatureData);
-  setText('Signature', signatureData ? 'N/A' : personal.signature);
+  setText('Signature', signatureData );
   try {
     form.getTextField('Initials').setText('');
   } catch (error) {
