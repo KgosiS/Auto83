@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
           lastName,
           email,
           idNumber,
+          termsAccepted: true,
+          termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
           createdAt: new Date().toISOString()
         }, { merge: true });
 
