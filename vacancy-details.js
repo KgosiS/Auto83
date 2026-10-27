@@ -315,7 +315,15 @@
         firstMissing?.focus();
         return;
       }
-      finish(values);
+
+      const z83Window = window.open('', '_blank', 'width=1200,height=900');
+      if (!z83Window) {
+        status.textContent = 'Please allow pop-ups to generate the Z83 preview.';
+        status.dataset.error = 'true';
+        return;
+      }
+
+      finish({ details: values, z83Window });
     });
 
     document.body.append(dialog);

@@ -906,20 +906,13 @@
       };
 
       const generateZ83 = async () => {
-        const z83Window = window.open('', '_blank', 'width=1200,height=900');
-
-        if (!z83Window) {
-          alert('Please allow pop-ups to generate the Z83 preview.');
-          return;
-        }
-
+        let z83Window;
         try {
           const profile = getStoredProfile() || { profile: {} };
-          const vacancyDetails = await window.requestVacancyDetails(profile.profile?.additional || {});
-          if (!vacancyDetails) {
-            z83Window.close();
-            return;
-          }
+          const result = await window.requestVacancyDetails(profile.profile?.additional || {});
+          if (!result) return;
+          const { details: vacancyDetails } = result;
+          z83Window = result.z83Window;
 
           profile.profile = profile.profile || {};
           profile.profile.additional = {
@@ -935,7 +928,7 @@
           const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
           z83Window.location.href = pdfUrl;
         } catch (error) {
-          z83Window.close();
+          z83Window?.close();
           alert('Unable to generate the Z83 form. Please try again.');
           console.error('Unable to generate Z83 form:', error);
         }
