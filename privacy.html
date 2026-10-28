@@ -45,14 +45,14 @@
     <ul>
       <li>The site uses browser storage to keep a local working copy of the profile and a short-lived cache of public news headlines. Browser storage remains on the device until cleared by the site or browser.</li>
       <li>When signed in, profile information is saved in the Auto83 Firebase project's Firestore database. Firebase Authentication manages sign-in. These are Google Firebase services subject to their own infrastructure and terms.</li>
-      <li>The news section requests public article metadata from the GDELT DOC API. The request contains a general South Africa news search, not your profile or application information. Headlines link to external publishers whose privacy practices are separate.</li>
+      <li>The news section requests public South African article metadata from FreeNewsApi through Auto83's Firebase Function. The request contains a country filter, not your profile or application information. Headlines link to external publishers whose privacy practices are separate.</li>
     </ul>
 
     <h2>How information is used</h2>
     <p>Profile information is used to display and save your profile and to prepare a Z83 PDF at your request. Vacancy circulars are not uploaded by the current manual-entry flow. The news feed is independent of your account profile. Auto83's current website code does not include Google AdSense advertising or analytics scripts.</p>
 
     <h2>Third-party services and external links</h2>
-    <p>The website loads libraries and fonts from third-party content delivery networks, uses Firebase for account and profile features, and contacts the GDELT API for news headlines. Those services may receive technical request information such as an IP address and browser details. When you follow an external link, the publisher's privacy notice applies.</p>
+    <p>The website loads libraries and fonts from third-party content delivery networks, uses Firebase for account and profile features and the news proxy, and the proxy contacts FreeNewsApi for headlines. Those services may receive technical request information such as an IP address and browser details. When you follow an external link, the publisher's privacy notice applies.</p>
     <p>If advertising is added later, this notice must be updated before launch to explain the advertising providers, cookies or similar technologies, available controls, and any consent choices required in the regions where the site is used. Google explains its advertising technologies in its <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Advertising and privacy information</a>.</p>
 
     <h2>Keeping your information accurate and managing it</h2>

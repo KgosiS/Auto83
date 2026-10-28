@@ -1,6 +1,6 @@
 (() => {
-  const API_URL = 'https://api.gdeltproject.org/api/v2/doc/doc';
-  const CACHE_KEY = 'auto83-rsa-news-v1';
+  const API_URL = 'https://us-central1-auto83-f2836.cloudfunctions.net/getRsaNews';
+  const CACHE_KEY = 'auto83-rsa-news-v2';
   const CACHE_DURATION = 30 * 60 * 1000;
   const MAX_ARTICLES = 9;
   const MAX_CACHE_AGE = 24 * 60 * 60 * 1000;
@@ -107,17 +107,7 @@
     const timeout = setTimeout(() => controller.abort(), 12000);
 
     try {
-      const url = new URL(API_URL);
-      url.search = new URLSearchParams({
-        query: '"South Africa" (government OR employment OR jobs OR public service)',
-        mode: 'ArtList',
-        format: 'json',
-        maxrecords: String(MAX_ARTICLES),
-        sort: 'HybridRel',
-        timespan: '7d'
-      });
-
-      const response = await fetch(url, { signal: controller.signal });
+      const response = await fetch(API_URL, { signal: controller.signal });
       if (!response.ok) throw new Error(`News service returned HTTP ${response.status}.`);
 
       const payload = await response.json();

@@ -6,7 +6,7 @@ The project is built entirely with HTML, CSS, and JavaScript, making it lightwei
 
 ## Firebase + GitHub Pages setup
 
-Because GitHub Pages only supports static hosting, the backend is implemented with Firebase Auth and Firestore on the client side. This means the app does not run a custom Node.js server on GitHub Pages.
+The website is hosted statically on GitHub Pages. Firebase Auth and Firestore run from the browser, while the South Africa news feed uses a Firebase Function to keep the FreeNewsApi key server-side.
 
 ### Step 1: Create a Firebase project
 
@@ -38,16 +38,35 @@ const firebaseConfig = {
 4. Save.
 5. GitHub Pages will provide a live URL.
 
-### Step 4: Authorization behavior
+### Step 4: Configure and deploy the news function
+
+1. Install the [Firebase CLI](https://firebase.google.com/docs/cli) and sign in with `firebase login`.
+2. Obtain an API key from [FreeNewsApi](https://www.freenewsapi.io/) and set it as a Firebase secret; do not add it to this repository:
+
+   ```sh
+   firebase functions:secrets:set FREENEWSAPI_KEY --project auto83-f2836
+   ```
+
+3. Deploy the function:
+
+   ```sh
+   firebase deploy --only functions:getRsaNews --project auto83-f2836
+   ```
+
+The function URL is configured in `news.js`. Its CORS policy currently allows the GitHub Pages origin `https://kgosis.github.io`. If the site uses a different origin, update the allowed origin in `functions/index.js` before deployment. The function retrieves English headlines for `country=za`, fetches the original publisher links, and caches the result briefly to reduce upstream API requests.
+
+Deploying Firebase Functions may require enabling billing for the Firebase project. Review Firebase's current pricing and usage limits before deployment.
+
+### Step 5: Authorization behavior
 
 - Sign up creates a user in Firebase Auth and stores profile information in Firestore.
 - Sign in authenticates with Firebase email/password.
 - Forgot password sends a Firebase reset email.
-- The site works on GitHub Pages because Firebase runs from the browser, not from a server.
+- Authentication and profile features work on GitHub Pages through Firebase's browser SDK; the news section requires the deployed Firebase Function.
 
 ### Important note
 
-GitHub Pages does not support server-side secrets. Keep Firebase config public as designed for web apps, and make sure your Firebase project security rules are correct.
+GitHub Pages does not support server-side secrets; the FreeNewsApi key is stored by Firebase Functions instead. Firebase web configuration is public by design, so make sure your Firebase project security rules are correct.
 
 ---
 
@@ -140,7 +159,7 @@ Using the saved profile, Auto83 will automatically populate every supported sect
 
 The public landing page includes original checklists and guidance on reading a vacancy advert, organising qualifications and work history, checking referee details, and reviewing a generated form. The guidance is general; each recruiting department's advert and the official form instructions take precedence.
 
-The RSA news section reads public article metadata from the GDELT DOC API, displays publisher-attributed headlines, links readers to the original source, and caches results in the browser. The news feed is optional and does not receive profile details. Headline availability depends on the external service and its rate limits.
+The RSA news section reads public South African article metadata from FreeNewsApi through a Firebase Function, displays publisher-attributed headlines, links readers to the original source, and caches results in the browser. The news feed is optional and does not receive profile details. Headline availability depends on the external service and its rate limits.
 
 See [privacy.html](./privacy.html) and [terms.html](./terms.html) for the site's current privacy notice and terms of use. Adding useful content or legal pages does not guarantee approval by Google AdSense; the site must also meet Google's current publisher and consent requirements.
 
