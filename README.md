@@ -38,6 +38,8 @@ const firebaseConfig = {
 4. Save.
 5. GitHub Pages will provide a live URL.
 
+The root `robots.txt` allows public crawling and points search engines to `sitemap.xml`. The sitemap lists the landing page, Privacy Notice and Terms of Use at `https://kgosis.github.io`; update both files if the site's public URL changes. Account and profile pages are intentionally not listed.
+
 ### Step 4: Configure and deploy the news function
 
 1. Install the [Firebase CLI](https://firebase.google.com/docs/cli) and sign in with `firebase login`.
