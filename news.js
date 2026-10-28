@@ -81,84 +81,128 @@
     }
   };
 
-  const displayArticles = (articles) => {
-    listElement.replaceChildren();
+const displayArticles = (articles) => {
+  listElement.replaceChildren();
 
-    articles.slice(0, MAX_ARTICLES).forEach((article) => {
-      const card = document.createElement("article");
-      card.className = "news-card";
+  articles.slice(0, MAX_ARTICLES).forEach((article) => {
+    const card = document.createElement("article");
+    card.className = "news-card";
 
-      const link = document.createElement("a");
-      link.href = article.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = article.title;
+    if (article.image) {
+      const image = document.createElement("img");
+      image.className = "news-image";
+      image.src = article.image;
+      image.alt = "";
+      image.loading = "lazy";
 
-      const meta = document.createElement("p");
-      meta.className = "news-meta";
-      meta.textContent = [
-        article.domain,
-        formatDate(article.seendate)
-      ].filter(Boolean).join(" · ");
+      image.addEventListener("error", () => {
+        image.remove();
+      });
 
-      card.append(link, meta);
-      listElement.append(card);
-    });
-
-    listElement.setAttribute("aria-busy", "false");
-  };
-
-  const readFeed = async (feed) => {
-    const response = await fetch(
-      PROXY + feed.url,
-      { credentials: "omit" }
-    );
-
-    if (!response.ok) {
-      throw new Error(`${feed.name}: HTTP ${response.status}`);
+      card.append(image);
     }
 
-    const xml = new DOMParser().parseFromString(
-      await response.text(),
-      "application/xml"
-    );
+    const content = document.createElement("div");
+    content.className = "news-content";
 
-    if (xml.querySelector("parsererror")) {
-      throw new Error(`${feed.name}: Invalid RSS feed`);
-    }
+    const publisher = document.createElement("p");
+    publisher.className = "news-publisher";
+    publisher.textContent = article.domain || "News";
 
-    return [...xml.querySelectorAll("item")]
-      .map((item) => {
-        const title =
-          item.querySelector("title")?.textContent?.trim() || "";
+    const link = document.createElement("a");
+    link.href = article.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = article.title;
 
-        const rawUrl =
-          item.querySelector("link")?.textContent?.trim() || "";
+    const meta = document.createElement("p");
+    meta.className = "news-meta";
+    meta.textContent = formatDate(article.seendate);
 
-        const published =
-          item.querySelector("pubDate")?.textContent?.trim() || "";
+    content.append(publisher, link, meta);
+    card.append(content);
+    listElement.append(card);
+  });
 
-        try {
-          const url = new URL(rawUrl);
+  listElement.setAttribute("aria-busy", "false");
+};
 
-          if (!["https:", "http:"].includes(url.protocol)) {
-            return null;
-          }
+ const readFeed = async (feed) => {
+  const response = await fetch(
+    PROXY + feed.url,
+    { credentials: "omit" }
+  );
 
-          if (!title || !rawUrl) return null;
+  if (!response.ok) {
+    throw new Error(`${feed.name}: HTTP ${response.status}`);
+  }
 
-          return {
-            title,
-            url: url.href,
-            domain: feed.name,
-            seendate: published
-          };
-        } catch {
-          return null;
+  const xml = new DOMParser().parseFromString(
+    await response.text(),
+    "application/xml"
+  );
+
+  if (xml.querySelector("parsererror")) {
+    throw new Error(`${feed.name}: Invalid RSS feed`);
+  }
+
+  const getImage = (item) => {
+    const candidates = [
+      item.querySelector("media\\:content")?.getAttribute("url"),
+      item.querySelector("media\\:thumbnail")?.getAttribute("url"),
+      item.querySelector("enclosure[type^='image']")?.getAttribute("url"),
+      item.querySelector("image url")?.textContent?.trim(),
+      item.querySelector("content\\:encoded img")?.getAttribute("src"),
+      item.querySelector("description img")?.getAttribute("src")
+    ];
+
+    for (const candidate of candidates) {
+      try {
+        if (!candidate) continue;
+
+        const url = new URL(candidate, feed.url);
+
+        if (url.protocol === "https:" || url.protocol === "http:") {
+          return url.href;
         }
-      })
-      .filter(Boolean);
+      } catch {
+        // Try the next image source.
+      }
+    }
+
+    return "";
   };
+
+  return [...xml.querySelectorAll("item")]
+    .map((item) => {
+      const title =
+        item.querySelector("title")?.textContent?.trim() || "";
+
+      const rawUrl =
+        item.querySelector("link")?.textContent?.trim() || "";
+
+      const published =
+        item.querySelector("pubDate")?.textContent?.trim() || "";
+
+      try {
+        const url = new URL(rawUrl);
+
+        if (!["https:", "http:"].includes(url.protocol)) return null;
+        if (!title) return null;
+
+        return {
+          title,
+          url: url.href,
+          image: getImage(item),
+          domain: feed.name,
+          seendate: published
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean);
+};
 
   const loadHeadlines = async ({ force = false } = {}) => {
     const cached = readCache();
