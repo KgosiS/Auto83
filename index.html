@@ -441,6 +441,45 @@ nav a{
     cursor:wait;
 }
 
+.circular-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:18px;
+}
+
+.circular-card{
+    display:flex;
+    min-height:150px;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:24px;
+    padding:24px;
+    background:#101010;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+}
+
+.circular-source{
+    color:#999;
+    font-size:.8rem;
+}
+
+.circular-card a{
+    color:#fff;
+    font-size:1.1rem;
+    font-weight:600;
+    line-height:1.5;
+    text-underline-offset:3px;
+}
+
+.circular-card a:hover{
+    color:#f5c400;
+}
+
+#circular-list[aria-busy="true"]{
+    opacity:.7;
+}
+
 .news-note{
     margin-top:18px;
 }
@@ -567,10 +606,18 @@ footer{
   #news-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .circular-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 520px) {
   #news-list {
+    grid-template-columns: 1fr;
+  }
+
+  .circular-grid {
     grid-template-columns: 1fr;
   }
 
@@ -669,6 +716,7 @@ footer{
         <li><a href="#">Home</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#guides">Z83 guides</a></li>
+        <li><a href="#circulars">Latest circulars</a></li>
         <li><a href="#rsa-news">RSA news</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#about">About</a></li>
@@ -791,6 +839,19 @@ Preparing a Z83 application takes more than filling in boxes. Use Auto83 to orga
 </section>
 
 <main>
+<section class="content-section" id="circulars">
+    <div class="news-heading">
+        <div>
+            <h2>Latest vacancy circulars</h2>
+            <p>The three latest Public Service Vacancy circulars from DPSA.</p>
+        </div>
+        <button id="refresh-circulars" class="news-control" type="button">Refresh circulars</button>
+    </div>
+    <p id="circular-status" class="news-status" role="status" aria-live="polite">Loading the latest circulars…</p>
+    <div id="circular-list" class="circular-grid" aria-busy="true"></div>
+    <p class="news-note">Circulars are published by the <a href="https://www.dpsa.gov.za/newsroom/psvc/" target="_blank" rel="noopener noreferrer">Department of Public Service and Administration</a>. Always check the official circular and department advert for closing dates and application instructions. Auto83 is an independent resource.</p>
+</section>
+
 <section class="content-section" id="guides">
     <div class="content-intro">
         <h2>Practical Z83 application guides</h2>
@@ -923,6 +984,7 @@ Auto83 helps South African job seekers organise reusable career information and 
 </footer>
 
 <script src="news.js" defer></script>
+<script src="circulars.js" defer></script>
 <script>
 const menuButton = document.querySelector('.menu');
 const navLinks = document.getElementById('navLinks');

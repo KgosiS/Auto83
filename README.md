@@ -55,7 +55,9 @@ The root `robots.txt` allows public crawling and points search engines to `sitem
    firebase deploy --only functions:getRsaNews --project auto83-f2836
    ```
 
-The function URL is configured in `news.js`. Its CORS policy currently allows the GitHub Pages origin `https://kgosis.github.io`. If the site uses a different origin, update the allowed origin in `functions/index.js` before deployment. The function retrieves English headlines for `country=za`, fetches the original publisher links, and caches the result briefly to reduce upstream API requests.
+The news function retrieves English headlines for `country=za`, fetches the original publisher links, and caches the result briefly to reduce upstream API requests.
+
+The homepage's latest vacancy circulars section reads the three newest links from the official DPSA public service vacancy circular page through a cached Firebase Function. Deploy it with `firebase deploy --only functions:getLatestCirculars --project auto83-f2836`. Its CORS policy allows `https://kgosis.github.io`; update the allowed origin in `functions/index.js` if the site moves to a different domain.
 
 Deploying Firebase Functions may require enabling billing for the Firebase project. Review Firebase's current pricing and usage limits before deployment.
 

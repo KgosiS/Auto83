@@ -1,5 +1,9 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { defineSecret } = require("firebase-functions/params");
+const {
+  DPSA_CIRCULARS_URL,
+  parseLatestCirculars
+} = require("./circulars");
 
 const freeNewsApiKey = defineSecret("FREENEWSAPI_KEY");
 
@@ -12,6 +16,9 @@ let cachedArticles = null;
 let cacheExpiresAt = 0;
 let lastApiRequestAt = 0;
 let inFlightRefresh = null;
+let cachedCirculars = null;
+let circularsCacheExpiresAt = 0;
+let inFlightCircularsRefresh = null;
 
 const waitForApiLimit = async () => {
   const wait = Math.max(
@@ -237,6 +244,79 @@ exports.getRsaNews = onRequest(
 
     } finally {
       inFlightRefresh = null;
+    }
+  }
+);
+
+const fetchLatestCirculars = async () => {
+  const response = await fetch(DPSA_CIRCULARS_URL, {
+    headers: {
+      "User-Agent": "Auto83 circular listing (https://kgosis.github.io)",
+      "Accept": "text/html"
+    },
+    signal: AbortSignal.timeout(10000)
+  });
+
+  if (!response.ok) {
+    throw new Error(`DPSA returned HTTP ${response.status}.`);
+  }
+
+  const circulars = parseLatestCirculars(await response.text());
+
+  if (circulars.length !== 3) {
+    throw new Error(
+      `DPSA returned ${circulars.length} usable circular links; expected 3.`
+    );
+  }
+
+  return circulars;
+};
+
+exports.getLatestCirculars = onRequest(
+  {
+    region: "us-central1",
+    cors: ["https://kgosis.github.io"],
+    timeoutSeconds: 15
+  },
+  async (request, response) => {
+    if (request.method !== "GET") {
+      response
+        .set("Allow", "GET")
+        .status(405)
+        .send("Method not allowed.");
+      return;
+    }
+
+    if (cachedCirculars && Date.now() < circularsCacheExpiresAt) {
+      response.json({ circulars: cachedCirculars });
+      return;
+    }
+
+    try {
+      if (!inFlightCircularsRefresh) {
+        inFlightCircularsRefresh = fetchLatestCirculars();
+      }
+
+      const circulars = await inFlightCircularsRefresh;
+      cachedCirculars = circulars;
+      circularsCacheExpiresAt = Date.now() + 60 * 60 * 1000;
+      response.json({ circulars });
+    } catch (error) {
+      console.error("Unable to load DPSA vacancy circulars:", error);
+
+      if (cachedCirculars?.length) {
+        response.status(200).json({
+          circulars: cachedCirculars,
+          cached: true
+        });
+        return;
+      }
+
+      response.status(502).json({
+        error: "DPSA vacancy circulars are temporarily unavailable."
+      });
+    } finally {
+      inFlightCircularsRefresh = null;
     }
   }
 );
